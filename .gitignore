@@ -1,4 +1,4 @@
-.venv\
+.venv/
 
 *.pyc
 __pycache__/
@@ -13,5 +13,5 @@ dist/
 build/
 *.egg-info/
 
-extractor_app\metadata.csv
-extractor_app\rawmetadata.csv
+extractor_app/metadata.csv
+extractor_app/rawmetadata.csv
