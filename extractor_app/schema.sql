@@ -3,6 +3,8 @@ DROP TABLE IF EXISTS SpecimenDescriptionSequence;
 DROP TABLE IF EXISTS PrimaryAnatomicStructureSequence;
 
 CREATE TABLE SpecimenSession (
+    SpecimenSessionID INTEGER PRIMARY KEY,
+    FolderID INTEGER,
     SpecificCharacterSet TEXT,
     ImageType TEXT,
     SOPClassUID TEXT,
@@ -50,25 +52,25 @@ CREATE TABLE SpecimenSession (
     IssuerOfTheContainerIdentifierSequence TEXT,
     ContainerTypeCodeSequence TEXT,
     AcquisitionContextSequence TEXT,
-    SpecimenDescriptionSequenceID INTEGER,  -- Foreign key to link with SpecimenDescriptionSequence
-    PRIMARY KEY (SOPInstanceUID),
-    FOREIGN KEY (SpecimenDescriptionSequenceID) REFERENCES SpecimenDescriptionSequence(SpecimenDescriptionID)
+    FOREIGN KEY (FolderID) REFERENCES SpecimenDescriptionSequence(FolderID),
+    FOREIGN KEY (SpecimenSessionID) REFERENCES SpecimenDescriptionSequence(SpecimenDescriptionSequenceID)
 );
 
 CREATE TABLE SpecimenDescriptionSequence ( 
-    SpecimenDescriptionID INTEGER PRIMARY KEY,
-    PrimaryAnatomicStructureSequence TEXT,
+    SpecimenDescriptionSequenceID INTEGER PRIMARY KEY,
+    FolderID INTEGER,
     SpecimenIdentifier TEXT,
     SpecimenUID TEXT,
     IssuerOfTheSpecimenIdentifierSequence TEXT,
     SpecimenShortDescription TEXT,
     SpecimenPreparationSequence TEXT,
-    PrimaryAnatomicStructureSequenceID INTEGER,  -- Foreign key to link with PrimaryAnatomicStructureSequence
-    FOREIGN KEY (PrimaryAnatomicStructureSequenceID) REFERENCES PrimaryAnatomicStructureSequence(PrimaryAnatomicStructureID)
+    FOREIGN KEY (FolderID) REFERENCES PrimaryAnatomicStructureSequence(FolderID),
+    FOREIGN KEY (SpecimenDescriptionSequenceID) REFERENCES PrimaryAnatomicStructureSequence(PrimaryAnatomicStructureSequenceID)
 );
 
 CREATE TABLE PrimaryAnatomicStructureSequence (
-    PrimaryAnatomicStructureID INTEGER PRIMARY KEY,
+    PrimaryAnatomicStructureSequenceID INTEGER PRIMARY KEY,
+    FolderID INTEGER,
     CodeValue TEXT,
     CodingSchemeDesignator TEXT,
     CodeMeaning TEXT
