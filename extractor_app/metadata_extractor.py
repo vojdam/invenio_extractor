@@ -89,19 +89,19 @@ class MetadataExtractor:
     #     }
     #     return truncated_meta
 
-    def _handle_structured_values(self, value_attribute: list, desired_key: str) -> str:
-        """Handles Values of a tag that contain a dictionary type"""
-        if value_attribute == " ":
-            return " "
-        for item in value_attribute:
-            if type(item) == dict:
-                return item[desired_key]
-            elif type(item) == dict:
-                return " "
+    # def _handle_structured_values(self, value_attribute: list, desired_key: str) -> str:
+    #     """Handles Values of a tag that contain a dictionary type"""
+    #     if value_attribute == " ":
+    #         return " "
+    #     for item in value_attribute:
+    #         if type(item) == dict:
+    #             return item[desired_key]
+    #         elif type(item) == dict:
+    #             return " "
 
-    def _format_date(self, date: str) -> str:
-        """Formats date from yyyymmdd to yyyy-mm-dd"""
-        return f"{date[:4]}-{date[4:6]}-{date[6:]}"
+    # def format_date(self, date: str) -> str:
+    #     """Formats date from yyyymmdd to yyyy-mm-dd"""
+    #     return f"{date[:4]}-{date[4:6]}-{date[6:]}"
 
     def _translate_codes(self, full_dict: dict) -> dict:
         """Translates the DICOM codes to their respective strings"""
