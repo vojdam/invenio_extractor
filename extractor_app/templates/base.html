@@ -5,12 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InveNIO Metadata Viewer</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
 </head>
 <body>
+    <div class="ui accordion">
+    {% set ns = namespace(c = 1, next_folder_id = 1) %}
+
     {% for session in session_list %}
-    <div class="ui segment">
-        <p class="ui big header">{{session["PatientName"]}}</p>
+    {% if loop.index < session_list|length %}
+    {% set ns.next_folder_id = session_list[loop.index]["FolderID"] %}
+    {% endif %}
+    {% if ns.c == 1 %}
+    <div class="title">
+    {% elif session["FolderID"] != ns.next_folder_id %}
+    <div class="content">
+    {% set ns.c = 0 %}
+    {% else %}
+    <div class="content">
+    {% endif %}
+        <p class="ui medium header">{{session["StudyDate"]}} | {{session["PatientName"][16:-2]}} | {{session["PatientID"]}} | {{session["PatientBirthDate"]}} | {{session["PatientBirthDate"]}}</p>
     </div>
+    {% set ns.c = ns.c + 1 %}
     {% endfor %}
+    </div>
+
+<script>
+    $('.ui.accordion').accordion();
+</script>
 </body>
 </html>

@@ -25,8 +25,15 @@ def create_app(test_config: str = None):
     @app.get("/")
     def home():
         database = db.get_db()
+
         session_list = database.execute("SELECT * FROM SpecimenSession").fetchall()
-        print(session_list)
-        return render_template("base.html", session_list=session_list)
+        specimen_desc_list = database.execute(
+            "SELECT * FROM SpecimenDescriptionSequence"
+        ).fetchall()
+        return render_template(
+            "base.html",
+            session_list=session_list,
+            specimen_desc_list=specimen_desc_list,
+        )
 
     return app
