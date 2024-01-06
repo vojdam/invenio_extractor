@@ -2,7 +2,7 @@ from metadata_extractor import TerminalHandler
 
 
 def main():
-    configfile = "config.ini"
+    configfile = "extractor_app\config.ini"
     handler = TerminalHandler(configfile)
     handler.handle_user()
 
