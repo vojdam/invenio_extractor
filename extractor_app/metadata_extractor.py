@@ -5,6 +5,7 @@ import logging
 import csv
 import pandas as pd
 import configparser
+import sqlite3
 
 
 class MetadataExtractor:
@@ -151,6 +152,7 @@ class MetadataExtractor:
                 full_meta,
                 self.path_to_rawdata_csv,
             )
+            self.write_to_database(full_meta)
             truncated_meta = self._extract_values_from_full_meta(full_meta_duplicate)
             self.save_to_csv(truncated_meta, self.path_to_truncdata_csv)
         logging.info("Vsechna metadata jsou ulozena!")
@@ -162,6 +164,17 @@ class MetadataExtractor:
             folder for folder in available_folders if folder not in written_folders
         ]
         return folder_difference
+
+    def write_to_database(self, meta_dict: dict) -> None:
+        """WIP function for writing into database"""
+        database = sqlite3.connect("instance\metadata.sqlite")
+        print(meta_dict["PatientName"]["Value"][0]["Alphabetic"])
+        cursor = database.cursor()
+        cursor.execute(
+            "INSERT INTO SpecimenSession (PatientName) VALUES (?)",
+            (meta_dict["PatientName"]["Value"][0]["Alphabetic"],),
+        )
+        database.commit()
 
 
 class TerminalHandler:
