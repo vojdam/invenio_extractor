@@ -121,9 +121,13 @@ class MetadataExtractor:
 
     def loop_through_instances(self, force_renew: bool = False) -> None:
         """Loops through folders in the DICOM images folder and performs metadata extraction"""
-
-        folders = os.listdir(self.path_to_dicom_folders)
-        folder_id = 1
+        if force_renew:
+            folders = os.listdir(self.path_to_dicom_folders)
+            folder_id = 1
+        else:
+            folders, folder_id = self._check_for_changes()
+            if folders == os.listdir(self.path_to_dicom_folders):
+                folder_id = 1
 
         for folder in folders:
             try:
@@ -152,13 +156,23 @@ class MetadataExtractor:
             folder_id += 1
         logging.info("Vsechna metadata jsou ulozena!")
 
-    # def _check_for_changes(self) -> list:
-    #     written_folders = pd.read_csv(self.path_to_truncdata_csv)["ID vzorku"].to_list()
-    #     available_folders = os.listdir(self.path_to_dicom_folders)
-    #     folder_difference = [
-    #         folder for folder in available_folders if folder not in written_folders
-    #     ]
-    #     return folder_difference
+    def _check_for_changes(self) -> list | int:
+        """Compares written image folders and available image folders"""
+        database = sqlite3.connect(self.database_path)
+        cursor = database.cursor()
+        written_folders_sql = cursor.execute(
+            "SELECT DISTINCT StudyInstanceUID FROM SpecimenSession"
+        ).fetchall()
+        written_folders = [folder[0][1:-1] for folder in written_folders_sql]
+
+        max_folder_id = database.execute(
+            "SELECT MAX(FolderID) FROM SpecimenSession"
+        ).fetchall()
+        available_folders = os.listdir(self.path_to_dicom_folders)
+        folder_difference = [
+            folder for folder in available_folders if folder not in written_folders
+        ]
+        return folder_difference, max_folder_id[0][0]
 
     def write_to_database(
         self, meta_dict: dict, sql_string: str, folder_id: int
@@ -180,5 +194,5 @@ class MetadataExtractor:
 
 
 # TESTING
-metadata_ext = MetadataExtractor("extractor_app\config.ini")
-metadata_ext.loop_through_instances()
+# metadata_ext = MetadataExtractor("extractor_app\config.ini")
+# metadata_ext.loop_through_instances()

@@ -22,6 +22,11 @@ def create_app(test_config: str = None):
 
     db.init_app(app)
 
+    from extractor_app.commands import init_db_command, update_database
+
+    app.cli.add_command(init_db_command)
+    app.cli.add_command(update_database)
+
     from extractor_app.views import metadata_view
 
     app.register_blueprint(metadata_view.bp)

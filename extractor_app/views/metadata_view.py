@@ -2,12 +2,14 @@ from flask import Blueprint, render_template
 
 from .. import db
 
+
 bp = Blueprint("metadata_view", __name__)
 
 
 @bp.get("/")
 def home():
     """base.html homepage that lists all files"""
+
     database = db.get_db()
 
     session_list = database.execute("SELECT * FROM SpecimenSession").fetchall()
@@ -16,11 +18,19 @@ def home():
         "SELECT MAX(FolderID) FROM SpecimenSession"
     ).fetchall()
 
-    return render_template(
-        "base.html",
-        session_list=session_list,
-        max_folder_id=max_folder_id,
-    )
+    if max_folder_id[0][0] == None:
+        print(max_folder_id[0][0])
+        return render_template(
+            "base.html",
+            session_list=[[]],
+            max_folder_id=[[0]],
+        )
+    else:
+        return render_template(
+            "base.html",
+            session_list=session_list,
+            max_folder_id=max_folder_id,
+        )
 
 
 @bp.get("/<int:item_id>")
