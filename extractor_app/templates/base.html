@@ -9,26 +9,27 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
 </head>
 <body>
-    <div class="ui accordion">
-    {% set ns = namespace(c = 1, next_folder_id = 1) %}
 
-    {% for session in session_list %}
-    {% if loop.index < session_list|length %}
-    {% set ns.next_folder_id = session_list[loop.index]["FolderID"] %}
+    <div class = "ui styled fluid accordion">
+    {% set ns = namespace(next_folder_id = 1, c = 1) %}
+    {% for i in range(1, max_folder_id[0][0]+1) %}
+    {% if ns.next_folder_id == session_list[ns.c]["FolderID"] %}
+    
+        <div class="title"><i class="dropdown icon"></i>{{session_list[ns.c]["StudyDate"]}} | {{session_list[ns.c]["PatientName"][16:-2]}} | {{session_list[ns.c]["PatientID"]}} | {{session_list[ns.c]["PatientBirthDate"]}}</div>
+        {% set ns.next_folder_id = ns.next_folder_id + 1 %}
     {% endif %}
-    {% if ns.c == 1 %}
-    <div class="title">
-    {% elif session["FolderID"] != ns.next_folder_id %}
+
     <div class="content">
-    {% set ns.c = 0 %}
-    {% else %}
-    <div class="content">
-    {% endif %}
-        <p class="ui medium header">{{session["StudyDate"]}} | {{session["PatientName"][16:-2]}} | {{session["PatientID"]}} | {{session["PatientBirthDate"]}} | {{session["PatientBirthDate"]}}</p>
+    <div class="ui selection list">
+        {% for session in session_list if session["FolderID"] == i %}
+        <div class="item">{{session["StudyDate"]}} | {{session["PatientName"][16:-2]}} | {{session["PatientID"]}} | {{session["PatientBirthDate"]}} | {{session["PatientBirthDate"]}}
+            <a href={{ns.c}}><div class="ui blue button">Full Metadata</div></a></div>
+        {% set ns.c = ns.c + 1 %}
+        {% endfor %}
     </div>
-    {% set ns.c = ns.c + 1 %}
+    </div>
     {% endfor %}
-    </div>
+    </div>  
 
 <script>
     $('.ui.accordion').accordion();

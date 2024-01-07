@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet'>
+    <style>
+        ul {
+            list-style-type: none;
+            margin-left: 2.5%;
+        }
+        li {
+            font-family: Lato;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <ul class="ui list">
+        {% for key in item_SpecimenSession[0].keys() %}
+        <li class="item"><b>{{key}}</b> = {{item_SpecimenSession[0][key]}}</li>
+        {% endfor %}
+
+        <li class="item">
+            <b>SpecimenDescriptionSequence: </b>
+            <ul class="list">
+            {% for key in item_SpecimenDescriptionSequence[0].keys() %}
+            <li class="item"><b>{{key}}</b> = {{item_SpecimenDescriptionSequence[0][key]}}</li>
+            {% endfor %}
+            
+            <li class="item">
+                <b>PrimaryAnatomicStructureSequence: </b>
+                <ul class="list">
+                {% for key in item_PrimaryAnatomicStructureSequence[0].keys() %}
+                <li class="item"><b>{{key}}</b> = {{item_PrimaryAnatomicStructureSequence[0][key]}}</li>
+                {% endfor %}
+                
+                </ul>
+            </li>
+        </ul>
+        </li>
+
+    </ul>
+</body>
+</html>

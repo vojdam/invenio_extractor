@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template
+from flask import Flask
 
 
 def create_app(test_config: str = None):
@@ -22,18 +22,8 @@ def create_app(test_config: str = None):
 
     db.init_app(app)
 
-    @app.get("/")
-    def home():
-        database = db.get_db()
+    from extractor_app.views import metadata_view
 
-        session_list = database.execute("SELECT * FROM SpecimenSession").fetchall()
-        specimen_desc_list = database.execute(
-            "SELECT * FROM SpecimenDescriptionSequence"
-        ).fetchall()
-        return render_template(
-            "base.html",
-            session_list=session_list,
-            specimen_desc_list=specimen_desc_list,
-        )
+    app.register_blueprint(metadata_view.bp)
 
     return app
