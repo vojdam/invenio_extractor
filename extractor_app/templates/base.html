@@ -32,7 +32,7 @@
             <div class="column">
                 <div style="height: 100%" class="ui segments">
                     {% for session in session_list%}
-                    <a onclick="change_iframe_src('/{{loop.index}}')" style="color:#4f4f4f; display:none; cursor:pointer" class="ui segment entry folder{{session["FolderID"]}}">{{session["StudyDate"]}} | {{session["PatientName"][15:-1]}} | {{session["PatientID"]}} | {{session["PatientBirthDate"]}} | {{session["PatientBirthDate"]}}</a>
+                    <a onclick="change_iframe_src('/{{loop.index}}')" style="color:#4f4f4f; display:none; cursor:pointer" class="ui segment entry folder{{session["FolderID"]}}">{{session["PatientName"][15:-1]}} | {{session["ImageID"]}} | {{session["PhotometricInterpretation"]}} | slide ID: {{session["ContainerIdentifier"]}} | {{specimen_description_list[loop.index-1]["SpecimenShortDescription"]}}</a>
                     
                     {% endfor %}
                 </div>

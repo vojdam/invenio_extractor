@@ -23,7 +23,7 @@ class MetadataExtractor:
             SamplesPerPixel, PhotometricInterpretation, Rows, Columns, BitsAllocated, 
             BitsStored, HighBit, PixelRepresentation, LossyImageCompression, ContainerIdentifier, 
             IssuerOfTheContainerIdentifierSequence, ContainerTypeCodeSequence, 
-            AcquisitionContextSequence, FolderID)
+            AcquisitionContextSequence, FolderID, ImageID)
             VALUES
             (:SpecificCharacterSet, :ImageType, :SOPClassUID, 
             :SOPInstanceUID, :StudyDate, :SeriesDate, :StudyTime, :SeriesTime, :AccessionNumber, 
@@ -36,7 +36,7 @@ class MetadataExtractor:
             :SamplesPerPixel, :PhotometricInterpretation, :Rows, :Columns, :BitsAllocated, 
             :BitsStored, :HighBit, :PixelRepresentation, :LossyImageCompression, 
             :ContainerIdentifier, :IssuerOfTheContainerIdentifierSequence, 
-            :ContainerTypeCodeSequence, :AcquisitionContextSequence, :FolderID)"""
+            :ContainerTypeCodeSequence, :AcquisitionContextSequence, :FolderID, :ImageID)"""
         self.sql_string_SpecimenDescriptionSequence = """INSERT INTO SpecimenDescriptionSequence
             (SpecimenIdentifier, SpecimenUID, IssuerOfTheSpecimenIdentifierSequence, 
             SpecimenShortDescription, SpecimenPreparationSequence, FolderID) 
@@ -64,6 +64,7 @@ class MetadataExtractor:
             with dcmread(f"{full_folder_path}\{file}") as dcm_file:
                 dict_meta = dcm_file.to_json_dict()
                 del dict_meta["7FE00010"]
+            dict_meta["ImageID"] = file[:7]
             dict_meta_list.append(dict_meta)
         return dict_meta_list
 
@@ -99,15 +100,18 @@ class MetadataExtractor:
     #         elif type(item) == dict:
     #             return " "
 
-    # def format_date(self, date: str) -> str:
-    #     """Formats date from yyyymmdd to yyyy-mm-dd"""
-    #     return f"{date[:4]}-{date[4:6]}-{date[6:]}"
+    def format_date(self, date: str) -> str:
+        """Formats date from yyyymmdd to yyyy-mm-dd"""
+        return f"{date[:4]}-{date[4:6]}-{date[6:]}"
 
     def _translate_codes(self, full_dict: dict) -> dict:
         """Translates the DICOM codes to their respective strings"""
         all_keys = full_dict.keys()
         new_all_keys = []
         for key in all_keys:
+            if key == "ImageID":
+                new_all_keys.append(key)
+                continue
             new_all_keys.append(dictionary_keyword(key))
             # check for nested dicts
             if (
@@ -138,6 +142,7 @@ class MetadataExtractor:
             for dictionary in full_meta:
                 translated_dictionary = self._translate_codes(dictionary)
 
+                # write to db:
                 self.write_to_database(
                     translated_dictionary, self.sql_string_SpecimenSession, folder_id
                 )
@@ -181,9 +186,21 @@ class MetadataExtractor:
         database = sqlite3.connect(self.database_path)
         new_values = []
         for key, value in meta_dict.items():
+            if key == "ImageID":
+                new_values.append(value)
+                continue
             new_values.append(str(value.get("Value", "   "))[2:-2])
         meta_dict = dict(zip(meta_dict.keys(), new_values))
         meta_dict["FolderID"] = folder_id
+        # format dates:
+        if "PatientBirthDate" in meta_dict:
+            meta_dict["PatientBirthDate"] = self.format_date(
+                meta_dict["PatientBirthDate"]
+                if len(meta_dict["PatientBirthDate"]) == 8
+                else "        "
+            )
+            meta_dict["StudyDate"] = self.format_date(meta_dict["StudyDate"])
+            meta_dict["SeriesDate"] = self.format_date(meta_dict["SeriesDate"])
 
         cursor = database.cursor()
         cursor.execute(
