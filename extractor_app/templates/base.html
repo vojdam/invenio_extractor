@@ -11,6 +11,9 @@
         .ui.segment:hover{
             background-color: #b4d5ff;
         }
+        .ui.segment:focus{
+            background-color: #b4d5ff;
+        }
     </style>
 </head>
 <body>
@@ -24,7 +27,7 @@
             <div class="column">
                 <div style="height:100%" class="ui segments">
                 {% for header_item in unique_headers %}
-                    <a style="cursor:pointer" onclick="toggle_show('folder{{header_item['FolderID']}}')"><div class="ui segment"><p style="color: #3f3f3f; font-size: 18px">{{header_item["StudyDate"]}} | {{header_item["PatientName"][15:-1]}} | {{header_item["PatientID"]}} | {{header_item["PatientBirthDate"]}}</p></div></a>
+                    <a style="cursor:pointer" onclick="toggle_show('folder{{header_item['FolderID']}}')"><div class="ui segment" tabindex="{{loop.index}}"><p style="color: #3f3f3f; font-size: 18px">{{header_item["StudyDate"]}} | {{header_item["PatientName"][15:-1]}} | {{header_item["PatientID"]}} | {{header_item["PatientBirthDate"]}}</p></div></a>
                 {% endfor %}
                 </div>
             </div>
@@ -32,7 +35,7 @@
             <div class="column">
                 <div style="height: 100%" class="ui segments">
                     {% for session in session_list%}
-                    <a onclick="change_iframe_src('/{{loop.index}}')" style="color:#4f4f4f; display:none; cursor:pointer" class="ui segment entry folder{{session["FolderID"]}}">{{session["PatientName"][15:-1]}} | {{session["ImageID"]}} | {{session["PhotometricInterpretation"]}} | slide ID: {{session["ContainerIdentifier"]}} | {{specimen_description_list[loop.index-1]["SpecimenShortDescription"]}}</a>
+                    <a onclick="change_iframe_src('/{{loop.index}}')" style="color:#4f4f4f; display:none; cursor:pointer" tabindex="{{loop.index}}" class="ui segment entry folder{{session["FolderID"]}}">{{session["PatientName"][15:-1]}} | {{session["ImageID"]}} | {{session["PhotometricInterpretation"]}} | slide ID: {{session["ContainerIdentifier"]}} | {{specimen_description_list[loop.index-1]["SpecimenShortDescription"]}}</a>
                     
                     {% endfor %}
                 </div>
