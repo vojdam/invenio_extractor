@@ -181,7 +181,7 @@ class MetadataExtractor:
         database = sqlite3.connect(self.database_path)
         new_values = []
         for key, value in meta_dict.items():
-            new_values.append(str(value.get("Value", "   "))[1:-1])
+            new_values.append(str(value.get("Value", "   "))[2:-2])
         meta_dict = dict(zip(meta_dict.keys(), new_values))
         meta_dict["FolderID"] = folder_id
 

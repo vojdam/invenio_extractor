@@ -18,18 +18,21 @@ def home():
         "SELECT MAX(FolderID) FROM SpecimenSession"
     ).fetchall()
 
+    unique_headers = database.execute(
+        "SELECT DISTINCT FolderID, PatientName, PatientID, StudyDate, PatientBirthDate FROM SpecimenSession"
+    ).fetchall()
+
     if max_folder_id[0][0] == None:
         print(max_folder_id[0][0])
         return render_template(
-            "base.html",
-            session_list=[[]],
-            max_folder_id=[[0]],
+            "base.html", session_list=[[]], max_folder_id=[[0]], unique_headers=[[0]]
         )
     else:
         return render_template(
             "base.html",
             session_list=session_list,
             max_folder_id=max_folder_id,
+            unique_headers=unique_headers,
         )
 
 
