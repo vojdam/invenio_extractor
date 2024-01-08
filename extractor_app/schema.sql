@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS PrimaryAnatomicStructureSequence;
 CREATE TABLE SpecimenSession (
     SpecimenSessionID INTEGER PRIMARY KEY,
     FolderID INTEGER,
+    ImageID TEXT,
     SpecificCharacterSet TEXT,
     ImageType TEXT,
     SOPClassUID TEXT,

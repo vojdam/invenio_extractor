@@ -13,6 +13,9 @@ def home():
     database = db.get_db()
 
     session_list = database.execute("SELECT * FROM SpecimenSession").fetchall()
+    specimen_description_list = database.execute(
+        "SELECT * FROM SpecimenDescriptionSequence"
+    ).fetchall()
 
     max_folder_id = database.execute(
         "SELECT MAX(FolderID) FROM SpecimenSession"
@@ -25,7 +28,11 @@ def home():
     if max_folder_id[0][0] == None:
         print(max_folder_id[0][0])
         return render_template(
-            "base.html", session_list=[[]], max_folder_id=[[0]], unique_headers=[[0]]
+            "base.html",
+            session_list=[[]],
+            max_folder_id=[[0]],
+            unique_headers=[[0]],
+            specimen_description_list=specimen_description_list[[0]],
         )
     else:
         return render_template(
@@ -33,6 +40,7 @@ def home():
             session_list=session_list,
             max_folder_id=max_folder_id,
             unique_headers=unique_headers,
+            specimen_description_list=specimen_description_list,
         )
 
 
