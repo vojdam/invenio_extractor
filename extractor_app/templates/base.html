@@ -5,38 +5,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InveNIO Metadata Viewer</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>     -->
+    <style>
+        .ui.segment:hover{
+            background-color: #b4d5ff;
+        }
+    </style>
 </head>
 <body>
     <div class="ui block header">
         <h3 style="padding-bottom: 12px; padding-top: 12px">InveNIO Metadata Viewer</h3>
         
     </div>
+    <div style="background-color: #ffffff" class="ui segment">
+        <div class="ui three column grid" >
+        
+            <div class="column">
+                <div style="height:100%" class="ui segments">
+                {% for header_item in unique_headers %}
+                    <a style="cursor:pointer" onclick="toggle_show('folder{{header_item['FolderID']}}')"><div class="ui segment"><p style="color: #3f3f3f; font-size: 18px">{{header_item["StudyDate"]}} | {{header_item["PatientName"][15:-1]}} | {{header_item["PatientID"]}} | {{header_item["PatientBirthDate"]}}</p></div></a>
+                {% endfor %}
+                </div>
+            </div>
 
-    <div class = "ui styled fluid accordion">
-    {% set ns = namespace(next_folder_id = 1, c = 1) %}
-    {% for i in range(1, max_folder_id[0][0]+1) %}
-    {% if ns.next_folder_id == session_list[ns.c]["FolderID"] %}
-    
-        <div class="title"><i class="dropdown icon"></i>{{session_list[ns.c]["StudyDate"]}} | {{session_list[ns.c]["PatientName"][16:-2]}} | {{session_list[ns.c]["PatientID"]}} | {{session_list[ns.c]["PatientBirthDate"]}}</div>
-        {% set ns.next_folder_id = ns.next_folder_id + 1 %}
-    {% endif %}
+            <div class="column">
+                <div style="height: 100%" class="ui segments">
+                    {% for session in session_list%}
+                    <a onclick="change_iframe_src('/{{loop.index}}')" style="color:#4f4f4f; display:none; cursor:pointer" class="ui segment entry folder{{session["FolderID"]}}">{{session["StudyDate"]}} | {{session["PatientName"][15:-1]}} | {{session["PatientID"]}} | {{session["PatientBirthDate"]}} | {{session["PatientBirthDate"]}}</a>
+                    
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="column">
+                <div style="background-color: #ffffff; height: 100%" class="ui segment">
+                    <iframe id="iframe" style="width: 100%; height: 100%; border: none" src=""></iframe>
+                </div>
+            </div>
+        </div>
 
-    <div class="content">
-    <div class="ui selection list">
-        {% for session in session_list if session["FolderID"] == i %}
-        <div class="item">{{session["StudyDate"]}} | {{session["PatientName"][16:-2]}} | {{session["PatientID"]}} | {{session["PatientBirthDate"]}} | {{session["PatientBirthDate"]}}
-            <a href={{ns.c}}><div class="ui blue button">Full Metadata</div></a></div>
-        {% set ns.c = ns.c + 1 %}
-        {% endfor %}
+        
     </div>
-    </div>
-    {% endfor %}
-    </div>  
-
 <script>
-    $('.ui.accordion').accordion();
+    function toggle_show(folder_id){
+        var entries = document.getElementsByClassName(folder_id);
+        var all_items = document.getElementsByClassName("entry");
+
+        for(var i = 0; i<all_items.length; i++) {
+            all_items[i].style.display = "none";
+        }
+
+        for(var i = 0; i<entries.length; i++){
+            if (entries[i].style.display != "none") {
+                
+                entries[i].style.display = "none";
+                
+            }
+            else {
+                
+                    entries[i].style.display = "block";
+                
+            }
+        }
+    }
+
+    function change_iframe_src(link_id){
+        document.getElementById("iframe").src=link_id;
+    }
 </script>
 </body>
 </html>
