@@ -44,7 +44,7 @@ def home():
         )
 
 
-@bp.get("/<int:item_id>")
+@bp.get("/metadata/<int:item_id>")
 def metadata_view_page(item_id: int):
     database = db.get_db()
     item_SpecimenSession = database.execute(

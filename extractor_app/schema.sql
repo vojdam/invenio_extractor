@@ -6,6 +6,7 @@ CREATE TABLE SpecimenSession (
     SpecimenSessionID INTEGER PRIMARY KEY,
     FolderID INTEGER,
     ImageID TEXT,
+    ImageFileName TEXT,
     SpecificCharacterSet TEXT,
     ImageType TEXT,
     SOPClassUID TEXT,

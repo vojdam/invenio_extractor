@@ -7,7 +7,7 @@
     <style>
         ul {
             list-style-type: none;
-            margin-left: 2.5%;
+            margin-left: 12px;
         }
         li {
             font-family: Lato;
@@ -16,6 +16,8 @@
     </style>
 </head>
 <body>
+    <iframe style="margin-left: 12px; width: 10em; height: 10em; border: none" src="../images/{{item_SpecimenSession[0]['StudyInstanceUID']}}/{{item_SpecimenSession[0]['ImageFileName']}}"></iframe>
+
     <ul class="ui list">
         {% for key in item_SpecimenSession[0].keys() %}
         <li class="item"><b>{{key}}</b> = {{item_SpecimenSession[0][key]}}</li>
