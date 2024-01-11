@@ -16,6 +16,7 @@ bp = Blueprint("image_view", __name__)
 # consider something else than mpl
 @bp.get("/images/<folder>/<image_filename>")
 def image_viewer(folder: str, image_filename: str):
+    # TODO: change to read from config
     path = f"instance\\images\\{folder}\\{image_filename}"
     dataset = pydicom.dcmread(path)
     fig = Figure()
