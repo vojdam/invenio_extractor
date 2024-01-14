@@ -33,6 +33,6 @@ def image_viewer(folder: str, image_filename: str):
     image.save(image_io, "PNG")
     data = base64.b64encode(image_io.getvalue()).decode("ascii")
     return render_template(
-        "image_view.html",
+        "thumbnail.html",
         image=f"data:image/png;base64,{data}",
     )
