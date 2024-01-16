@@ -47,7 +47,7 @@ def image_viewer(folder: str, image_filename: str):
     # TODO: change to read from config
     path = f"instance\\images\\{folder}\\{image_filename}"
     dataset = pydicom.dcmread(path)
-    number_of_slices = 5
+    number_of_slices = 64
     px_array = dataset.pixel_array
     image_slices = slice_image(px_array, number_of_slices)
     string_list = image_slices_to_string(image_slices)
