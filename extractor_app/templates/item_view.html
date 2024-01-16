@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
     <style>
         ul {
             list-style-type: none;
@@ -16,25 +16,29 @@
     </style>
 </head>
 <body>
-    <iframe style="margin-left: 12px; border: none" src="../images/{{item_SpecimenSession[0]['StudyInstanceUID']}}/{{item_SpecimenSession[0]['ImageFileName']}}"></iframe>
-
-    <ul class="ui list">
+    <iframe style="margin-left: 12px; border: none" src="../thumbnail/{{item_SpecimenSession[0]['StudyInstanceUID']}}/{{item_SpecimenSession[0]['ImageFileName']}}"></iframe>
+    <div>
+    <a href="../image_view/{{item_SpecimenSession[0]['StudyInstanceUID']}}/{{item_SpecimenSession[0]['ImageFileName']}}"  target="_blank">
+        <button class="ui green button">View Full Image</button>
+    </a>
+    </div>
+    <ul>
         {% for key in item_SpecimenSession[0].keys() %}
-        <li class="item"><b>{{key}}</b> = {{item_SpecimenSession[0][key]}}</li>
+        <li><b>{{key}}</b> = {{item_SpecimenSession[0][key]}}</li>
         {% endfor %}
 
-        <li class="item">
+        <li>
             <b>SpecimenDescriptionSequence: </b>
-            <ul class="list">
+            <ul>
             {% for key in item_SpecimenDescriptionSequence[0].keys() %}
-            <li class="item"><b>{{key}}</b> = {{item_SpecimenDescriptionSequence[0][key]}}</li>
+            <li><b>{{key}}</b> = {{item_SpecimenDescriptionSequence[0][key]}}</li>
             {% endfor %}
             
-            <li class="item">
+            <li>
                 <b>PrimaryAnatomicStructureSequence: </b>
-                <ul class="list">
+                <ul>
                 {% for key in item_PrimaryAnatomicStructureSequence[0].keys() %}
-                <li class="item"><b>{{key}}</b> = {{item_PrimaryAnatomicStructureSequence[0][key]}}</li>
+                <li><b>{{key}}</b> = {{item_PrimaryAnatomicStructureSequence[0][key]}}</li>
                 {% endfor %}
                 
                 </ul>

@@ -4,21 +4,20 @@ import base64
 from io import BytesIO
 
 from PIL import Image
-from .. import pydicom_PIL
 
 import pydicom
 
 
-bp = Blueprint("image_view", __name__)
+bp = Blueprint("thumbnail_view", __name__)
 
 
 # consider something else than mpl
-@bp.get("/images/<folder>/<image_filename>")
+@bp.get("/thumbnail/<folder>/<image_filename>")
 def image_viewer(folder: str, image_filename: str):
     # TODO: change to read from config
     path = f"instance\\images\\{folder}\\{image_filename}"
     dataset = pydicom.dcmread(path)
-    image = pydicom_PIL.get_PIL_image(dataset)
+    image = Image.fromarray(dataset.pixel_array)
     image_aspect_ratio = image.size[0] / image.size[1]
     image.thumbnail(
         (image_aspect_ratio * 130, 130 / image_aspect_ratio),
