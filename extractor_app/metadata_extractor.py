@@ -3,14 +3,15 @@ from pydicom.datadict import dictionary_keyword
 import os
 import logging
 import sqlite3
-import configparser
+from . import config_handler
 
 
 class MetadataExtractor:
-    def __init__(self, config_path: str) -> None:
-        self.config = configparser.ConfigParser()
-        self.config.read(config_path)
-        (self.database_path, self.path_to_dicom_folders) = self.handle_config()
+    def __init__(self) -> None:
+        cf_handler = config_handler.ConfigHandler()
+        (self.database_path, self.path_to_dicom_folders) = cf_handler.handle_config(
+            "PATHS", "PathToDatabase", "PathToImagesFolder"
+        )
         logging.basicConfig(level=logging.INFO)
         self.sql_string_SpecimenSession = """INSERT INTO SpecimenSession (SpecificCharacterSet, ImageType, SOPClassUID, 
             SOPInstanceUID, StudyDate, SeriesDate, StudyTime, SeriesTime, AccessionNumber, 
@@ -47,13 +48,6 @@ class MetadataExtractor:
             (CodeValue, CodingSchemeDesignator, CodeMeaning, FolderID) 
             VALUES 
             (:CodeValue, :CodingSchemeDesignator, :CodeMeaning, :FolderID)"""
-
-    def handle_config(self):
-        """Reads settings from .ini config file"""
-        return [
-            self.config["PATHS"]["PathToDatabase"],
-            self.config["PATHS"]["PathToImagesFolder"],
-        ]
 
     def _get_metadata(self, folder_path: str) -> list:
         """Saves metadata from a DCM file folder to a list of dicts"""
@@ -137,7 +131,7 @@ class MetadataExtractor:
         written_folders_sql = cursor.execute(
             "SELECT DISTINCT StudyInstanceUID FROM SpecimenSession"
         ).fetchall()
-        written_folders = [folder[0][1:-1] for folder in written_folders_sql]
+        written_folders = [folder[0][:] for folder in written_folders_sql]
 
         max_folder_id = database.execute(
             "SELECT MAX(FolderID) FROM SpecimenSession"
