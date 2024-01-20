@@ -7,7 +7,7 @@ from . import db
 @click.command("update-db")
 def update_database():
     """Updates the database"""
-    me = metadata_extractor.MetadataExtractor("extractor_app\config.ini")
+    me = metadata_extractor.MetadataExtractor()
     me.loop_through_instances()
 
 

@@ -7,6 +7,7 @@ from PIL import Image
 
 import pydicom
 
+from .. import config_handler
 
 bp = Blueprint("thumbnail_view", __name__)
 
@@ -14,8 +15,8 @@ bp = Blueprint("thumbnail_view", __name__)
 # consider something else than mpl
 @bp.get("/thumbnail/<folder>/<image_filename>")
 def image_viewer(folder: str, image_filename: str):
-    # TODO: change to read from config
-    path = f"instance\\images\\{folder}\\{image_filename}"
+    cf_handler = config_handler.ConfigHandler()
+    path = f"{cf_handler.handle_config('PATHS', 'PathToImagesFolder')[0]}/{folder}/{image_filename}"
     dataset = pydicom.dcmread(path)
     image = Image.fromarray(dataset.pixel_array)
     image_aspect_ratio = image.size[0] / image.size[1]

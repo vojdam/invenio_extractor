@@ -10,6 +10,7 @@ import numpy
 
 import pydicom
 
+from .. import config_handler
 
 bp = Blueprint("image_view", __name__)
 
@@ -44,10 +45,10 @@ def image_slices_to_string(img_list: list) -> list:
 
 @bp.get("/image_view/<folder>/<image_filename>")
 def image_viewer(folder: str, image_filename: str):
-    # TODO: change to read from config
-    path = f"instance\\images\\{folder}\\{image_filename}"
+    cf_handler = config_handler.ConfigHandler()
+    path = f"{cf_handler.handle_config('PATHS', 'PathToImagesFolder')[0]}/{folder}/{image_filename}"
     dataset = pydicom.dcmread(path)
-    number_of_slices = 64
+    number_of_slices = int(cf_handler.handle_config("VARS", "NumberOfImgSlices")[0])
     px_array = dataset.pixel_array
     image_slices = slice_image(px_array, number_of_slices)
     string_list = image_slices_to_string(image_slices)
