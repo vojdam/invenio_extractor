@@ -55,9 +55,10 @@ class MetadataExtractor:
         files_in_folder = os.listdir(full_folder_path)
         dict_meta_list = []
         for file in files_in_folder:
-            with dcmread(f"{full_folder_path}\{file}") as dcm_file:
+            with dcmread(
+                f"{full_folder_path}\{file}", stop_before_pixels=True
+            ) as dcm_file:
                 dict_meta = dcm_file.to_json_dict()
-                del dict_meta["7FE00010"]
             dict_meta["ImageID"] = file[:7]
             dict_meta["ImageFileName"] = file
             dict_meta_list.append(dict_meta)
