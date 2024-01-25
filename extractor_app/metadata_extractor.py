@@ -54,7 +54,7 @@ class MetadataExtractor:
         full_folder_path = f"{self.path_to_dicom_folders}\{folder_path}"
         files_in_folder = os.listdir(full_folder_path)
         dict_meta_list = []
-        for file in files_in_folder:
+        for file in sorted(files_in_folder):
             with dcmread(
                 f"{full_folder_path}\{file}", stop_before_pixels=True
             ) as dcm_file:
@@ -125,7 +125,7 @@ class MetadataExtractor:
             folder_id += 1
         logging.info("Metadata saved successfully!")
 
-    def _check_for_changes(self) -> list | int:
+    def _check_for_changes(self):
         """Compares written image folders and available image folders"""
         database = sqlite3.connect(self.database_path)
         cursor = database.cursor()
