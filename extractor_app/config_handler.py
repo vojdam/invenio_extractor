@@ -2,7 +2,7 @@ import configparser
 
 
 class ConfigHandler:
-    def __init__(self, config_path: str = "extractor_app/config.ini") -> None:
+    def __init__(self, config_path: str = "config.ini") -> None:
         self.config = configparser.ConfigParser()
         self.config.read(config_path)
 
