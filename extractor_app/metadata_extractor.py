@@ -4,6 +4,7 @@ import os
 import logging
 import sqlite3
 from . import config_handler
+from natsort import os_sorted
 
 
 class MetadataExtractor:
@@ -54,12 +55,15 @@ class MetadataExtractor:
         full_folder_path = f"{self.path_to_dicom_folders}\{folder_path}"
         files_in_folder = os.listdir(full_folder_path)
         dict_meta_list = []
-        for file in sorted(files_in_folder):
+        for file in os_sorted(files_in_folder):
             with dcmread(
                 f"{full_folder_path}\{file}", stop_before_pixels=True
             ) as dcm_file:
                 dict_meta = dcm_file.to_json_dict()
-            dict_meta["ImageID"] = file[:7]
+            if file[6] == "_":
+                dict_meta["ImageID"] = file[:6]
+            else:
+                dict_meta["ImageID"] = file[:7]
             dict_meta["ImageFileName"] = file
             dict_meta_list.append(dict_meta)
         return dict_meta_list
