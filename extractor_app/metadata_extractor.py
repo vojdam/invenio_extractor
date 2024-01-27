@@ -141,11 +141,15 @@ class MetadataExtractor:
         max_folder_id = database.execute(
             "SELECT MAX(FolderID) FROM SpecimenSession"
         ).fetchall()
+        if max_folder_id[0][0] == None:
+            max_folder_id_int = 0
+        else:
+            max_folder_id_int = int(max_folder_id[0][0])
         available_folders = os.listdir(self.path_to_dicom_folders)
         folder_difference = [
             folder for folder in available_folders if folder not in written_folders
         ]
-        return folder_difference, max_folder_id[0][0]
+        return folder_difference, max_folder_id_int + 1
 
     def write_to_database(
         self, meta_dict: dict, sql_string: str, folder_id: int

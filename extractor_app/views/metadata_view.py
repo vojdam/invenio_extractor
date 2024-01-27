@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template
 
 from .. import db
-
+from extractor_app.metadata_extractor import MetadataExtractor as ME
 
 bp = Blueprint("metadata_view", __name__)
 
@@ -11,6 +11,7 @@ def home():
     """base.html homepage that lists all files"""
 
     database = db.get_db()
+    me = ME()
 
     session_list = database.execute("SELECT * FROM SpecimenSession").fetchall()
     specimen_description_list = database.execute(
@@ -32,7 +33,8 @@ def home():
             session_list=[[]],
             max_folder_id=[[0]],
             unique_headers=[[0]],
-            specimen_description_list=specimen_description_list[[0]],
+            specimen_description_list=specimen_description_list[:],
+            update_db=me.loop_through_instances,
         )
     else:
         return render_template(
@@ -41,6 +43,7 @@ def home():
             max_folder_id=max_folder_id,
             unique_headers=unique_headers,
             specimen_description_list=specimen_description_list,
+            update_db=me.loop_through_instances,
         )
 
 

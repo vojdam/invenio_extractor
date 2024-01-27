@@ -33,4 +33,9 @@ def create_app(test_config: str = None):
     app.register_blueprint(thumbnail_view.bp)
     app.register_blueprint(image_view.bp)
 
+    # from extractor_app.metadata_extractor import MetadataExtractor as ME
+
+    # me = ME()
+    # app.jinja_env.globals.update(update_db=me.loop_through_instances)
+
     return app
