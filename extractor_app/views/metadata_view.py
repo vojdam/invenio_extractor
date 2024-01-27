@@ -34,7 +34,7 @@ def home():
             max_folder_id=[[0]],
             unique_headers=[[0]],
             specimen_description_list=specimen_description_list[:],
-            update_db=me.loop_through_instances,
+            # update_db=me.loop_through_instances,
         )
     else:
         return render_template(
@@ -43,7 +43,7 @@ def home():
             max_folder_id=max_folder_id,
             unique_headers=unique_headers,
             specimen_description_list=specimen_description_list,
-            update_db=me.loop_through_instances,
+            # update_db=me.loop_through_instances,
         )
 
 
