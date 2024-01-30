@@ -27,7 +27,11 @@ def create_app(test_config: str = None):
     app.cli.add_command(init_db_command)
     app.cli.add_command(update_database)
 
-    from extractor_app.views import metadata_view, thumbnail_view, image_view
+    from extractor_app.views import (
+        metadata_view,
+        thumbnail_view,
+        image_view,
+    )
 
     app.register_blueprint(metadata_view.bp)
     app.register_blueprint(thumbnail_view.bp)
