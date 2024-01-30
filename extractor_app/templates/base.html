@@ -17,12 +17,12 @@
     </style>
 </head>
 <body>
-    <div class="ui block header">
+    <div class="ui block header" style="height:8vh">
         <!-- update db func: -->
         <!-- {{update_db()}} -->
         <h3 style="padding-bottom: 12px; padding-top: 12px">InveNIO Metadata Viewer</h3>
     </div>
-    <div class="ui segment" style="background-color: #fff">
+    <div class="ui segment" style="height:8vh;background-color: #ffffff">
         <form method="post">
             <label for="key">Key:</label>
             <select id="key" name="key">
@@ -40,7 +40,7 @@
         <div class="ui three column grid" >
         
             <div class="column">
-                <div style="height:100%" class="ui segments">
+                <div style="overflow:auto;height:75vh" class="ui segments">
                 {% for header_item in unique_headers %}
                     <a style="cursor:pointer" onclick="toggle_show('folder{{header_item['FolderID']}}'); change_iframe_src('')"><div class="ui segment" tabindex="{{loop.index}}"><p style="color: #3f3f3f; font-size: 18px">{{header_item["StudyDate"]}} | {{header_item["PatientName"][15:-1]}} | {{header_item["PatientID"]}} | {{header_item["PatientBirthDate"]}}</p></div></a>
                 {% endfor %}
@@ -48,7 +48,7 @@
             </div>
 
             <div class="column">
-                <div style="height: 100%" class="ui segments">
+                <div style="overflow:auto;height:75vh" class="ui segments">
                     {% for session in session_list%}
                     <a onclick="change_iframe_src('/metadata/{{loop.index}}')" style="color:#4f4f4f; display:none; cursor:pointer" tabindex="{{loop.index}}" class="ui segment entry folder{{session['FolderID']}}">{{session["PatientName"][15:-1]}} | {{session["ImageID"]}} | {{session["PhotometricInterpretation"]}} | slide ID: {{session["ContainerIdentifier"]}} | {{specimen_description_list[loop.index-1]["SpecimenShortDescription"]}}</a>
                     
@@ -56,7 +56,7 @@
                 </div>
             </div>
             <div class="column">
-                <div style="background-color: #ffffff; height: 100%" class="ui segment">
+                <div style="background-color: #ffffff; height: 75vh" class="ui segment">
                     <iframe id="iframe" style="width: 100%; height: 100%; border: none" src=""></iframe>
                 </div>
             </div>
