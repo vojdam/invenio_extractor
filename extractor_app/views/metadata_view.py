@@ -71,15 +71,14 @@ def home():
             specimen_description_list=specimen_description_list[:],
             # update_db=me.loop_through_instances,
         )
-    else:
-        return render_template(
-            "base.html",
-            session_list=session_list,
-            # max_folder_id=max_folder_id,
-            unique_headers=unique_headers,
-            specimen_description_list=specimen_description_list,
-            # update_db=me.loop_through_instances,
-        )
+    return render_template(
+        "base.html",
+        session_list=session_list,
+        # max_folder_id=max_folder_id,
+        unique_headers=unique_headers,
+        specimen_description_list=specimen_description_list,
+        # update_db=me.loop_through_instances,
+    )
 
 
 @bp.get("/metadata/<int:item_id>")
