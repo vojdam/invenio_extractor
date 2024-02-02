@@ -24,7 +24,6 @@ def handle_search(database):
                 f"SELECT * FROM SpecimenDescriptionSequence WHERE SpecimenDescriptionSequenceID = {row['SpecimenSessionID']}"
             ).fetchall()
         )
-    print(search_session_list)
     return search_session_list, unique_headers, specimen_description_list
 
 

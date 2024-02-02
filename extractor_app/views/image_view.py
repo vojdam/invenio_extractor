@@ -50,8 +50,14 @@ def image_viewer(folder: str, image_filename: str):
     dataset = pydicom.dcmread(path)
     number_of_slices = int(cf_handler.handle_config("VARS", "NumberOfImgSlices")[0])
     px_array = dataset.pixel_array
-    image_slices = slice_image(px_array, number_of_slices)
-    string_list = image_slices_to_string(image_slices)
+    # handle non main slide images
+    if image_filename[4:6] != "_1":
+        img = Image.fromarray(px_array)
+        img_list = [img]
+        string_list = image_slices_to_string(img_list)
+    else:
+        image_slices = slice_image(px_array, number_of_slices)
+        string_list = image_slices_to_string(image_slices)
     return render_template(
         "image_view.html", images=string_list, img_height=len(px_array)
     )
