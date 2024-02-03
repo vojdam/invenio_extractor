@@ -51,7 +51,11 @@ def image_viewer(folder: str, image_filename: str):
     number_of_slices = int(cf_handler.handle_config("VARS", "NumberOfImgSlices")[0])
     px_array = dataset.pixel_array
     # handle non main slide images
-    if image_filename[4:6] != "_1":
+    if (
+        image_filename[4:7] != "_1_"
+        or image_filename[4:7] != "_2_"
+        and px_array.shape[2] != 3
+    ):
         img = Image.fromarray(px_array)
         img_list = [img]
         string_list = image_slices_to_string(img_list)

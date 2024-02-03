@@ -56,15 +56,15 @@ def home():
         "SELECT DISTINCT FolderID, PatientName, PatientID, StudyDate, PatientBirthDate FROM SpecimenSession"
     ).fetchall()
 
-    if max_folder_id[0][0] == None:
-        print(max_folder_id[0][0])
-        return render_template(
-            "base.html",
-            session_list=[[]],
-            # max_folder_id=[[0]],
-            unique_headers=[[0]],
-            specimen_description_list=specimen_description_list[:],
-        )
+    # if max_folder_id[0][0] == None:
+    #     print(max_folder_id[0][0])
+    #     return render_template(
+    #         "base.html",
+    #         session_list=session_list,
+    #         # max_folder_id=[[0]],
+    #         unique_headers=unique_headers,
+    #         specimen_description_list=specimen_description_list,
+    # )
     return render_template(
         "base.html",
         session_list=session_list,
