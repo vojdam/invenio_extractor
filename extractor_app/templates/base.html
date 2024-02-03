@@ -16,10 +16,9 @@
     </style>
 </head>
 <body>
-    <!-- update db func: -->
-    <!-- {{update_db()}} -->
     <div class="ui menu" style="height:7vh">
         <div class="item"><h3 style="padding-bottom: 12px; padding-top: 12px">InveNIO Metadata Viewer</h3></div>
+        <div class="item"><a href="/update" target="_blank"><button class="ui button blue">Update Database</button></a></div>
         <div class="right item" style="float:right;background-color: #ffffff">
             <form method="post">
                 <div class="ui action input">
@@ -32,7 +31,7 @@
                 </select>
                 <!-- <label for="value" style="padding-left:10px">Value:</label> -->
                 <input type="text" id="value" name="value" required>
-                <button class="ui button"  type="submit">Search</button>
+                <button class="ui button" type="submit">Search</button>
                 </div>
             </form>
         </div>

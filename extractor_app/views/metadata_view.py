@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, request
 
 from .. import db
-from extractor_app.metadata_extractor import MetadataExtractor as ME
 
 bp = Blueprint("metadata_view", __name__)
 
@@ -32,8 +31,6 @@ def home():
     """base.html homepage that lists all files"""
     database = db.get_db()
 
-    # me = ME()
-
     if request.method == "POST":
         session_list, unique_headers, specimen_description_list = handle_search(
             database
@@ -44,7 +41,6 @@ def home():
             # max_folder_id=max_folder_id,
             unique_headers=unique_headers,
             specimen_description_list=specimen_description_list,
-            # update_db=me.loop_through_instances,
         )
 
     session_list = database.execute("SELECT * FROM SpecimenSession").fetchall()
@@ -68,7 +64,6 @@ def home():
             # max_folder_id=[[0]],
             unique_headers=[[0]],
             specimen_description_list=specimen_description_list[:],
-            # update_db=me.loop_through_instances,
         )
     return render_template(
         "base.html",
@@ -76,7 +71,6 @@ def home():
         # max_folder_id=max_folder_id,
         unique_headers=unique_headers,
         specimen_description_list=specimen_description_list,
-        # update_db=me.loop_through_instances,
     )
 
 
