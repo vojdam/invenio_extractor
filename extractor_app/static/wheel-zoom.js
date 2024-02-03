@@ -1252,8 +1252,8 @@
           if (Math.abs(contentNewLeft) <= maxAvailableLeft)
             content.currentLeft = contentNewLeft;
           // if we do not go beyond the permissible boundaries of the viewport
-          if (Math.abs(contentNewTop) != maxAvailableTop)
-            content.currentTop = contentNewTop;
+          // if (Math.abs(contentNewTop) <= maxAvailableTop)
+          content.currentTop = contentNewTop;
           _this._transform(options.smoothTimeDrag);
           if (typeof options.onMove === "function") {
             options.onMove(event, _this);
