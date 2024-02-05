@@ -51,7 +51,7 @@
             <div class="column">
                 <div style="overflow:auto;height: 90vh" class="ui segments">
                     {% for session in session_list%}
-                    <a onclick="change_iframe_src('/metadata/{{loop.index}}')" style="color:#4f4f4f; display:none; cursor:pointer" tabindex="{{loop.index}}" class="ui segment entry folder{{session['FolderID']}}">{{session["PatientName"][15:-1]}} | {{session["ImageID"]}} | {{session["PhotometricInterpretation"]}} | slide ID: {{session["ContainerIdentifier"]}} | {{specimen_description_list[loop.index-1]["SpecimenShortDescription"]}}</a>
+                    <a onclick="change_iframe_src('/metadata/{{session["SpecimenSessionID"]}}')" style="color:#4f4f4f; display:none; cursor:pointer" tabindex="{{session["SpecimenSessionID"]}}" class="ui segment entry folder{{session['FolderID']}}">{{session["PatientName"][15:-1]}} | {{session["ImageID"]}} | {{session["PhotometricInterpretation"]}} | slide ID: {{session["ContainerIdentifier"]}} | {{specimen_description_list[loop.index-1]["SpecimenShortDescription"]}}</a>
                     
                     {% endfor %}
                 </div>
