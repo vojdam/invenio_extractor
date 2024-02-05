@@ -43,7 +43,7 @@
             <div class="column">
                 <div style="overflow:auto;height: 90vh" class="ui segments">
                 {% for header_item in unique_headers %}
-                    <a style="cursor:pointer" onclick="toggle_show('folder{{header_item['FolderID']}}'); change_iframe_src('')"><div class="ui segment" tabindex="{{loop.index}}"><p style="color: #3f3f3f; font-size: 18px">{{header_item["StudyDate"]}} | {{header_item["PatientName"][15:-1]}} | {{header_item["PatientID"]}} | {{header_item["PatientBirthDate"]}}</p></div></a>
+                    <a style="cursor:pointer" onclick="toggle_show('folder{{header_item['FolderID']}}'); change_iframe_src('')"><div class="ui segment" tabindex="{{header_item['FolderID']}}"><p style="color: #3f3f3f; font-size: 18px">{{header_item["StudyDate"]}} | {{header_item["PatientName"][15:-1]}} | {{header_item["PatientID"]}} | {{header_item["PatientBirthDate"]}}</p></div></a>
                 {% endfor %}
                 </div>
             </div>
