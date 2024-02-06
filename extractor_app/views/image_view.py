@@ -53,12 +53,14 @@ def image_viewer(folder: str, image_filename: str):
     # handle non main slide images
     if (
         image_filename[4:7] != "_1_"
+        and px_array.shape[2] != 3
         or image_filename[4:7] != "_2_"
         and px_array.shape[2] != 3
     ):
         img = Image.fromarray(px_array)
         img_list = [img]
         string_list = image_slices_to_string(img_list)
+    # main RGB slide image
     else:
         image_slices = slice_image(px_array, number_of_slices)
         string_list = image_slices_to_string(image_slices)
