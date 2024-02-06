@@ -48,9 +48,9 @@ def home():
         "SELECT * FROM SpecimenDescriptionSequence"
     ).fetchall()
 
-    max_folder_id = database.execute(
-        "SELECT MAX(FolderID) FROM SpecimenSession"
-    ).fetchall()
+    # max_folder_id = database.execute(
+    #     "SELECT MAX(FolderID) FROM SpecimenSession"
+    # ).fetchall()
 
     unique_headers = database.execute(
         "SELECT DISTINCT FolderID, PatientName, PatientID, StudyDate, PatientBirthDate FROM SpecimenSession"
