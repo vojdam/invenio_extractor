@@ -50,20 +50,21 @@ def image_viewer(folder: str, image_filename: str):
     dataset = pydicom.dcmread(path)
     number_of_slices = int(cf_handler.handle_config("VARS", "NumberOfImgSlices")[0])
     px_array = dataset.pixel_array
-    # handle non main slide images
+    # handle main RGB slide images
     if (
-        image_filename[4:7] != "_1_"
-        and px_array.shape[2] != 3
-        or image_filename[4:7] != "_2_"
-        and px_array.shape[2] != 3
+        image_filename[4:7] == "_1_"
+        and len(px_array.shape) == 3
+        or image_filename[4:7] == "_2_"
+        and len(px_array.shape) == 3
     ):
+        image_slices = slice_image(px_array, number_of_slices)
+        string_list = image_slices_to_string(image_slices)
+    # handle other images
+    else:
         img = Image.fromarray(px_array)
         img_list = [img]
         string_list = image_slices_to_string(img_list)
-    # main RGB slide image
-    else:
-        image_slices = slice_image(px_array, number_of_slices)
-        string_list = image_slices_to_string(image_slices)
+
     return render_template(
         "image_view.html", images=string_list, img_height=len(px_array)
     )
