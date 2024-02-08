@@ -32,12 +32,14 @@ def create_app(test_config: str = None):
         thumbnail_view,
         image_view,
         updater_view,
+        editor_view,
     )
 
     app.register_blueprint(metadata_view.bp)
     app.register_blueprint(thumbnail_view.bp)
     app.register_blueprint(image_view.bp)
     app.register_blueprint(updater_view.bp)
+    app.register_blueprint(editor_view.bp)
 
     # from extractor_app.metadata_extractor import MetadataExtractor as ME
 

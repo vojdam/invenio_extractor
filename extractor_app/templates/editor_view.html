@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <style>
+        ul {
+            list-style-type: none;
+            margin-left: 12px;
+        }
+        li {
+            font-family: Lato;
+            margin-top: 8px;
+        }
+    </style>
+    </head>
+    <body>
+        <form method="post">
+            {% for key in item_SpecimenSession[0].keys() %}
+            <label for="{{key}}"><b>{{key}}:</b></label>
+            <input type="text" name="{{key}}" id="{{key}}" value="{{item_SpecimenSession[0][key]}}">
+            <br>
+            {% endfor %}
+    
+            <b>SpecimenDescriptionSequence: </b><br>
+            {% for key in item_SpecimenDescriptionSequence[0].keys() %}
+            <label for="{{key}}"><b>{{key}}:</b></label>
+            <input type="text" name="{{key}}" id="{{key}}" value="{{item_SpecimenDescriptionSequence[0][key]}}">
+            <br>
+            {% endfor %}
+        
+            <b>PrimaryAnatomicStructureSequence: </b><br>
+            {% for key in item_PrimaryAnatomicStructureSequence[0].keys() %}
+            <label for="{{key}}"><b>{{key}}:</b></label>
+            <input type="text" name="{{key}}" id="{{key}}" value="{{item_PrimaryAnatomicStructureSequence[0][key]}}">
+            <br>
+            {% endfor %}
+    
+        </form>
+
+    </body>
+</html>
