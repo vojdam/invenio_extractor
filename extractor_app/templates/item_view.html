@@ -16,7 +16,7 @@
     </style>
 </head>
 <body>
-    <iframe style="margin-left: 12px; border: none" src="../thumbnail/{{item_SpecimenSession[0]['StudyInstanceUID']}}/{{item_SpecimenSession[0]['ImageFileName']}}"></iframe>
+    <iframe id="iframe" style="margin-left: 12px; border: none" src="../thumbnail/{{item_SpecimenSession[0]['StudyInstanceUID']}}/{{item_SpecimenSession[0]['ImageFileName']}}"></iframe>
     <div>
     <a href="../image_view/{{item_SpecimenSession[0]['StudyInstanceUID']}}/{{item_SpecimenSession[0]['ImageFileName']}}"  target="_blank">
         <button class="ui green button">View Full Image</button>
@@ -48,4 +48,10 @@
 
     </ul>
 </body>
+<script>
+    var iframe = document.getElementById("iframe");
+    iframe.onload = function(){
+        iframe.style.height = iframe.contentWindow.document.body.scrollHeight + iframe.contentWindow.document.body.scrollHeight*0.12 + 'px';
+    }
+</script>
 </html>
