@@ -14,7 +14,7 @@ def handle_search(database):
         f'SELECT * FROM SpecimenSession WHERE {item_key} LIKE "%{item_value}%"'
     ).fetchall()
     unique_headers = database.execute(
-        f'SELECT DISTINCT FolderID, PatientName, PatientID, StudyDate, PatientBirthDate FROM SpecimenSession WHERE {item_key} LIKE "%{item_value}%"'
+        f'SELECT FolderID, PatientName, PatientID, StudyDate, PatientBirthDate FROM SpecimenSession WHERE {item_key} LIKE "%{item_value}%" GROUP BY FolderID'
     ).fetchall()
     specimen_description_list = []
     for row in search_session_list:
@@ -53,7 +53,7 @@ def home():
     # ).fetchall()
 
     unique_headers = database.execute(
-        "SELECT DISTINCT FolderID, PatientName, PatientID, StudyDate, PatientBirthDate FROM SpecimenSession"
+        "SELECT FolderID, PatientName, PatientID, StudyDate, PatientBirthDate FROM SpecimenSession GROUP BY FolderID"
     ).fetchall()
 
     # if max_folder_id[0][0] == None:
@@ -74,7 +74,8 @@ def home():
     )
 
 
-@bp.get("/metadata/<int:item_id>")
+@bp.route("/metadata/")
+@bp.route("/metadata/<int:item_id>/")
 def metadata_view_page(item_id: int):
     database = db.get_db()
     item_SpecimenSession = database.execute(

@@ -12,7 +12,8 @@ from .. import config_handler
 bp = Blueprint("thumbnail_view", __name__)
 
 
-@bp.get("/thumbnail/<folder>/<image_filename>")
+@bp.route("/thumbnail/")
+@bp.route("/thumbnail/<folder>/<image_filename>")
 def image_viewer(folder: str, image_filename: str):
     cf_handler = config_handler.ConfigHandler()
     path = f"{cf_handler.handle_config('PATHS', 'PathToImagesFolder')[0]}/{folder}/{image_filename}"
