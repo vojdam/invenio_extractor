@@ -8,41 +8,41 @@ bp = Blueprint("metadata_view", __name__)
 
 def handle_search(database):
     """queries the database for the search term"""
-    item_key = request.form["key"]
+    table_name, item_key = request.form["key"].split(":")
     item_value = request.form["value"]
+    search_session_list = []
+    unique_headers = []
 
-    search_session_list = database.execute(
-        f'SELECT * FROM SpecimenSession WHERE {item_key} LIKE "%{item_value}%"'
-    ).fetchall()
-    unique_headers = database.execute(
-        f'SELECT FolderID, PatientName, PatientID, StudyDate, PatientBirthDate FROM SpecimenSession WHERE {item_key} LIKE "%{item_value}%" GROUP BY FolderID'
-    ).fetchall()
-    specimen_description_list = []
-    for row in search_session_list:
-        specimen_description_list.append(
+    folder_ids = database.execute(
+        f'SELECT DISTINCT FolderID FROM {table_name} WHERE {item_key} LIKE "%{item_value}%"'
+    )
+
+    for id in folder_ids:
+        search_session_list.append(
             database.execute(
-                f"SELECT * FROM SpecimenDescriptionSequence WHERE SpecimenDescriptionSequenceID = {row['SpecimenSessionID']}"
+                f"SELECT * FROM SpecimenSession WHERE FolderID = {id[0]}"
             ).fetchall()
         )
-    return search_session_list, unique_headers, specimen_description_list
+        unique_headers.append(
+            database.execute(
+                f"SELECT FolderID, PatientName, PatientID, StudyDate, PatientBirthDate FROM SpecimenSession WHERE FolderID = {id[0]} GROUP BY FolderID"
+            ).fetchall()[0]
+        )
+    session_list = [item for row in search_session_list for item in row]
+    specimen_description_list = []
+    for row in session_list:
+        specimen_description_list.append(
+            database.execute(
+                f"SELECT * FROM SpecimenDescriptionSequence WHERE SpecimenDescriptionSequenceID = {row[0]}"
+            ).fetchall()
+        )
+    return session_list, unique_headers, specimen_description_list
 
 
 @bp.route("/", methods=("GET", "POST"))
 def home():
     """base.html homepage that lists all files"""
     database = db.get_db()
-
-    if request.method == "POST":
-        session_list, unique_headers, specimen_description_list = handle_search(
-            database
-        )
-        return render_template(
-            "base.html",
-            session_list=session_list,
-            # max_folder_id=max_folder_id,
-            unique_headers=unique_headers,
-            specimen_description_list=specimen_description_list,
-        )
 
     session_list = database.execute("SELECT * FROM SpecimenSession").fetchall()
     specimen_description_list = database.execute(
@@ -53,12 +53,21 @@ def home():
         "SELECT FolderID, PatientName, PatientID, StudyDate, PatientBirthDate FROM SpecimenSession GROUP BY FolderID"
     ).fetchall()
 
+    custom_data = database.execute(f"SELECT * FROM CustomData")
+    custom_data_colnames = list(map(lambda x: x[0], custom_data.description))[2:]
+
+    if request.method == "POST":
+        session_list, unique_headers, specimen_description_list = handle_search(
+            database
+        )
+
     return render_template(
         "base.html",
         session_list=session_list,
         # max_folder_id=max_folder_id,
         unique_headers=unique_headers,
         specimen_description_list=specimen_description_list,
+        custom_data=custom_data_colnames,
     )
 
 

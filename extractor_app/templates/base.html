@@ -24,10 +24,13 @@
                 <div class="ui action input">
                 <!-- <label for="key">Key:</label> -->
                 <select id="key" name="key">
-                    <option value="PatientID">PatientID</option>
-                    <option value="PatientName">PatientName</option>
-                    <option value="AccessionNumber">AccessionNumber</option>
-                    <option value="StudyDate">StudyDate</option>
+                    <option value="SpecimenSession:PatientID">PatientID</option>
+                    <option value="SpecimenSession:PatientName">PatientName</option>
+                    <option value="SpecimenSession:AccessionNumber">AccessionNumber</option>
+                    <option value="SpecimenSession:StudyDate">StudyDate</option>
+                    {% for colname in custom_data%}
+                    <option value="CustomData:{{colname}}">{{colname}}</option>
+                    {% endfor %}
                 </select>
                 <!-- <label for="value" style="padding-left:10px">Value:</label> -->
                 <input type="text" id="value" name="value" required>
