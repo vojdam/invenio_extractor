@@ -74,6 +74,8 @@
             <div class="ui action input" style="width:100%">
                 <input type="text" name="CustomData:{{key}}" id="CustomData:{{key}}" value="{{item_SpecimenSession[0]['FolderID']}}">
                 <button type="submit" name="submit_button" id="CustomData:{{key}}" value="CustomData:{{key}}" class="ui button">Update</button>
+            {% elif key in [' ', 'TEXT'] %}
+
             {% else %}
             <div>
                 <label for="{{key}}"><b>{{key}}:</b></label><br>

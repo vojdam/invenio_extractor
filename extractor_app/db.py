@@ -32,7 +32,11 @@ def create_custom_data_table() -> None:
     cur = db.cursor()
 
     if custom_data is not None:
-        check_for_new_custom_columns(cur, custom_data)
+        try:
+            check_for_new_custom_columns(cur, custom_data)
+        except sqlite3.OperationalError:
+            pass
+
         custom_data = " TEXT, ".join(custom_data) + " TEXT, "
         cur.execute(
             f"""CREATE TABLE IF NOT EXISTS CustomData (

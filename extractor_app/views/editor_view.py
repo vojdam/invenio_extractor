@@ -86,11 +86,14 @@ def editor(item_id: int):
         if item_CustomData == []:
             raise sqlite3.OperationalError
     except sqlite3.OperationalError:
-        cur = database.execute(f"SELECT * FROM CustomData")
-        item_CustomData = list(map(lambda x: x[0], cur.description))
-        item_CustomData = [
-            dict(zip(item_CustomData, ("" for x in range(len(item_CustomData)))))
-        ]
+        try:
+            cur = database.execute(f"SELECT * FROM CustomData")
+            item_CustomData = list(map(lambda x: x[0], cur.description))
+            item_CustomData = [
+                dict(zip(item_CustomData, ("" for x in range(len(item_CustomData)))))
+            ]
+        except sqlite3.OperationalError:
+            item_CustomData = [{" ": " "}]
 
     return render_template(
         "editor_view.html",
