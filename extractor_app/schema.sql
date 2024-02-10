@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS SpecimenSession;
 DROP TABLE IF EXISTS SpecimenDescriptionSequence;
 DROP TABLE IF EXISTS PrimaryAnatomicStructureSequence;
+DROP TABLE IF EXISTS CustomData;
 
 CREATE TABLE SpecimenSession (
     SpecimenSessionID INTEGER PRIMARY KEY,

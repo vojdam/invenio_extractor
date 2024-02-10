@@ -11,12 +11,6 @@ bp = Blueprint("editor_view", __name__)
 def generate_update_table_query() -> None:
     item_key = request.form["submit_button"]
     item_value = request.form[item_key]
-    # fix quotes
-    # item_value = (
-    #     (item_value[0] if item_value[0] != "'" else "''")
-    #     + item_value[1:-1].replace("'", "''")
-    #     + (item_value[-1] if item_value[-1] != "'" else "''")
-    # )
     item_value = item_value.replace("'", "''")
     table_name, item_key_short = item_key.split(":")
     item_id = request.form[f"{table_name}:{table_name}ID"]
