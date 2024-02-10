@@ -1,6 +1,6 @@
 [project]
 name = "InveNIO Extractor"
-version = "0.9.5"
+version = "0.9.6"
 authors = [
   { name="Vojtech Damian", email="vojdam@email.cz" },
 ]
