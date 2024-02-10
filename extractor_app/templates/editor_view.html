@@ -59,6 +59,30 @@
                 <button type="submit" name="submit_button" id="PrimaryAnatomicStructureSequence:{{key}}" value="PrimaryAnatomicStructureSequence:{{key}}" class="ui button">Update</button>
             </div></div>
             {% endfor %}
+
+            <h4 class="ui dividing header"><b>CustomData: </b><br></h4>
+            {% for key in item_CustomData[0].keys() %}
+            {% if key == 'CustomDataID' %}
+            <div class="advanced" style="display:none">
+                <label for="{{key}}"><b>{{key}}:</b></label><br>
+            <div class="ui action input" style="width:100%">
+                <input type="text" name="CustomData:{{key}}" id="CustomData:{{key}}" value="{{item_SpecimenSession[0]['SpecimenSessionID']}}">
+                <button type="submit" name="submit_button" id="CustomData:{{key}}" value="CustomData:{{key}}" class="ui button">Update</button>
+            {% elif key == 'FolderID' %}
+            <div class="advanced" style="display:none">
+                <label for="{{key}}"><b>{{key}}:</b></label><br>
+            <div class="ui action input" style="width:100%">
+                <input type="text" name="CustomData:{{key}}" id="CustomData:{{key}}" value="{{item_SpecimenSession[0]['FolderID']}}">
+                <button type="submit" name="submit_button" id="CustomData:{{key}}" value="CustomData:{{key}}" class="ui button">Update</button>
+            {% else %}
+            <div>
+                <label for="{{key}}"><b>{{key}}:</b></label><br>
+            <div class="ui action input" style="width:100%">
+                <input type="text" name="CustomData:{{key}}" id="CustomData:{{key}}" value="{{item_CustomData[0][key]}}">
+                <button type="submit" name="submit_button" id="CustomData:{{key}}" value="CustomData:{{key}}" class="ui button">Update</button>
+            {% endif %}
+            </div></div>
+            {% endfor %}
             
         </form>
 

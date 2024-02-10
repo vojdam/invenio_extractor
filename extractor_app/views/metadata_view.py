@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request
 
+import sqlite3
 from .. import db
 
 bp = Blueprint("metadata_view", __name__)
@@ -48,23 +49,10 @@ def home():
         "SELECT * FROM SpecimenDescriptionSequence"
     ).fetchall()
 
-    # max_folder_id = database.execute(
-    #     "SELECT MAX(FolderID) FROM SpecimenSession"
-    # ).fetchall()
-
     unique_headers = database.execute(
         "SELECT FolderID, PatientName, PatientID, StudyDate, PatientBirthDate FROM SpecimenSession GROUP BY FolderID"
     ).fetchall()
 
-    # if max_folder_id[0][0] == None:
-    #     print(max_folder_id[0][0])
-    #     return render_template(
-    #         "base.html",
-    #         session_list=session_list,
-    #         # max_folder_id=[[0]],
-    #         unique_headers=unique_headers,
-    #         specimen_description_list=specimen_description_list,
-    # )
     return render_template(
         "base.html",
         session_list=session_list,
@@ -88,9 +76,19 @@ def metadata_view_page(item_id: int):
         f"SELECT * FROM PrimaryAnatomicStructureSequence WHERE PrimaryAnatomicStructureSequenceID = {item_id}"
     ).fetchall()
 
+    try:
+        item_CustomData = database.execute(
+            f"SELECT * FROM CustomData WHERE CustomDataID = {item_id}"
+        ).fetchall()
+        if item_CustomData == []:
+            raise sqlite3.OperationalError
+    except sqlite3.OperationalError:
+        item_CustomData = [{" ": " "}]
+
     return render_template(
         "item_view.html",
         item_SpecimenSession=item_SpecimenSession,
         item_SpecimenDescriptionSequence=item_SpecimenDescriptionSequence,
         item_PrimaryAnatomicStructureSequence=item_PrimaryAnatomicStructureSequence,
+        item_CustomData=item_CustomData,
     )

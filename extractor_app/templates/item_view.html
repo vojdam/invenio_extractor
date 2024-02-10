@@ -49,6 +49,12 @@
             </li>
         </ul>
         </li>
+        <b>CustomData: </b>
+        <ul>
+            {% for key in item_CustomData[0].keys() %}
+            <li><b>{{key}}</b> = {{item_CustomData[0][key]}}</li>
+            {% endfor %}
+        </ul>
 
     </ul>
 </body>
