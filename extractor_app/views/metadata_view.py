@@ -53,8 +53,14 @@ def home():
         "SELECT FolderID, PatientName, PatientID, StudyDate, AccessionNumber FROM SpecimenSession GROUP BY FolderID"
     ).fetchall()
 
-    custom_data = database.execute(f"SELECT * FROM CustomData")
-    custom_data_colnames = list(map(lambda x: x[0], custom_data.description))[2:]
+    try:
+        custom_data = database.execute("SELECT * FROM CustomData")
+        custom_data_colnames = list(map(lambda x: x[0], custom_data.description))[2:]
+        if custom_data == []:
+            raise sqlite3.OperationalError
+    except sqlite3.OperationalError:
+        custom_data = [{" ": " "}]
+        custom_data_colnames = []
 
     if request.method == "POST":
         session_list, unique_headers, specimen_description_list = handle_search(
