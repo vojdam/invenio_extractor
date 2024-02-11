@@ -8,7 +8,7 @@
     </style>
 </head>
 <body>
-    <div class="container-flex">
+    <div class="container-flex mx-5">
         <div class="row mt-3">
             <div class="btn-group">
                 <a class="btn btn-success active" href="../../image_view/{{item_SpecimenSession[0]['StudyInstanceUID']}}/{{item_SpecimenSession[0]['ImageFileName']}}"  target="_blank">View Full Image</a>
@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="row">
-            <iframe id="iframe" style="margin-left: 12px; border: none; overflow:hidden" src="../../thumbnail/{{item_SpecimenSession[0]['StudyInstanceUID']}}/{{item_SpecimenSession[0]['ImageFileName']}}"></iframe>
+            <iframe id="iframe" style="margin-left: 12px; border: none" src="../../thumbnail/{{item_SpecimenSession[0]['StudyInstanceUID']}}/{{item_SpecimenSession[0]['ImageFileName']}}"></iframe>
         </div>
         <ul class="list-group">
             {% for key in item_SpecimenSession[0].keys() %}
@@ -54,7 +54,7 @@
 <script>
     var iframe = document.getElementById("iframe");
     iframe.onload = function(){
-        iframe.style.height = iframe.contentWindow.document.body.scrollHeight + iframe.contentWindow.document.body.scrollHeight*0.12 + 'px';
+        iframe.style.height = iframe.contentWindow.document.body.scrollHeight + iframe.contentWindow.document.body.scrollHeight*0.13 + 'px';
     }
 </script>
 </html>
