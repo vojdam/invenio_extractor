@@ -4,26 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InveNIO Metadata Viewer</title>
-    <link rel="stylesheet" href={{url_for("static", filename="semantic.min.css")}}>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <style>
-        .ui.segment:hover{
-            background-color: #b4d5ff;
-        }
-        .ui.segment:focus{
-            background-color: #b4d5ff;
-        }
-
+        tbody tr:focus{
+            --bs-table-color-state: var(--bs-table-active-color);
+            --bs-table-bg-state: var(--bs-table-active-bg);
+        } 
     </style>
 </head>
 <body>
-    <div class="ui menu" style="height:7vh">
-        <div class="item"><h3 style="padding-bottom: 12px; padding-top: 12px">InveNIO Metadata Viewer</h3></div>
-        <div class="item"><a href="/update" target="_blank"><button class="ui button blue">Update Database</button></a></div>
-        <div class="right item" style="float:right;background-color: #ffffff">
-            <form method="post">
-                <div class="ui action input">
+    <nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand text-white" href="#">InveNIO Viewer</a>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="/update" target="_blank">Update Database</a>
+                </li>
+            </ul>
+            <div class="nav-item">
+            <form class="input-group mb-3" role="search" method="post">
                 <!-- <label for="key">Key:</label> -->
-                <select id="key" name="key">
+                <select class="form-select form-select" id="key" name="key">
                     <option value="SpecimenSession:PatientID">PatientID</option>
                     <option value="SpecimenSession:PatientName">PatientName</option>
                     <option value="SpecimenSession:AccessionNumber">AccessionNumber</option>
@@ -33,40 +34,69 @@
                     {% endfor %}
                 </select>
                 <!-- <label for="value" style="padding-left:10px">Value:</label> -->
-                <input type="text" id="value" name="value" required>
-                <button class="ui button green" type="submit">Search</button>
-                <button onclick="window.location='/'" type="button" class="ui button">Clear</button>
-                </div>
+                <input class="form-control"  type="text" id="value" name="value" required>
+                <button class="btn btn-light" type="submit">Search</button>
+                <button onclick="window.location='/'" type="button" class="btn btn-outline-secondary">Clear</button>
             </form>
-        </div>
-    </div>
+            </div>
+        </div>   
+    </nav>
 
-    <div style="background-color: #ffffff" class="ui segment">
-        <div class="ui three column grid">
-        
-            <div class="column">
-                <div style="overflow:auto;height: 90vh" class="ui segments">
+    <div style="background-color: #ffffff" class="container-flex">
+        <div class="row g-0 ">
+            <div class="col border-end border-dark" style="height: 95vh;overflow:auto;">
+                <table class="table table-bordered table-hover">
+                <thead>
+                    <tr class="table-secondary">
+                        <th scope="col"><div>StudyDate</div></th>
+                        <th scope="col"><div>PatientName</div></th>
+                        <th scope="col"><div>PatientID</div></th>
+                        <th scope="col"><div>AccessionNumber</div></th>
+                    </tr>
+                </thead>
+                <tbody>
                 {% for header_item in unique_headers %}
-                    <a style="cursor:pointer" onclick="toggle_show('folder{{header_item['FolderID']}}'); change_iframe_src('')"><div class="ui segment" tabindex="{{header_item['FolderID']}}"><p style="color: #3f3f3f; font-size: 18px">{{header_item["StudyDate"]}} | {{header_item["PatientName"][15:-1]}} | {{header_item["PatientID"]}} | {{header_item["PatientBirthDate"]}}</p></div></a>
+                    <tr id="folder{{header_item['FolderID']}}" tabindex="{{header_item['FolderID']}}" onclick="toggle_show('folder{{header_item['FolderID']}}'); change_iframe_src(''); toggle_active('folder{{header_item['FolderID']}}')" style="cursor:pointer">
+                        <td>{{header_item["StudyDate"]}}</td>
+                        <td>{{header_item["PatientName"][15:-1]}}</td>
+                        <td>{{header_item["PatientID"]}}</td>
+                        <td>{{header_item["AccessionNumber"]}}</td>
+                    </tr>
                 {% endfor %}
-                </div>
+                </tbody>
+                </table>
             </div>
 
-            <div class="column">
-                <div style="overflow:auto;height: 90vh" class="ui segments">
-                    {% for session in session_list%}
-                    <a onclick="change_iframe_src('/metadata/{{session["SpecimenSessionID"]}}')" style="color:#4f4f4f; display:none; cursor:pointer" tabindex="{{session["SpecimenSessionID"]}}" class="ui segment entry folder{{session['FolderID']}}">{{session["PatientName"][15:-1]}} | {{session["ImageID"]}} | {{session["PhotometricInterpretation"]}} | slide ID: {{session["ContainerIdentifier"]}} | {{specimen_description_list[loop.index-1]["SpecimenShortDescription"]}}</a>
-                    
-                    {% endfor %}
-                </div>
+            <div class="col border-end border-dark" style="height: 95vh;overflow:auto;">
+                <table class="table table-bordered table-hover">
+                <thead>
+                    <tr class="table-secondary">
+                        <th scope="col"><div>PatientName</div></th>
+                        <th scope="col"><div>ImageID</div></th>
+                        <th scope="col"><div>Color</div></th>
+                        <th scope="col"><div>ContainerIdentifier</div></th>
+                        <th scope="col"><div>SpecimenShortDescription</div></th>
+                    </tr>
+                </thead>   
+                <tbody>
+                {% for session in session_list %}
+                    <tr tabindex="{{session['SpecimenSessionID']}}" id="entry{{session['SpecimenSessionID']}}" onclick="change_iframe_src('/metadata/{{session['SpecimenSessionID']}}');" style="display:none; cursor:pointer" class="entry folder{{session['FolderID']}}">
+                        <td>{{session["PatientName"][15:-1]}}</td>
+                        <td>{{session["ImageID"]}}</td>
+                        <td>{% if session["PhotometricInterpretation"] == "RGB" %}RGB{%else%}B/W{%endif%}</td>
+                        <td>{{session["ContainerIdentifier"]}}</td>
+                        <td>{{specimen_description_list[loop.index-1]["SpecimenShortDescription"]}}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                </table>
             </div>
-            <div class="column">
-                <div style="background-color: #ffffff;height: 90vh" class="ui segment">
+            <div class="col" style="overflow:hidden; height: 95vh;">
+                <div style="background-color: #ffffff;height: 92vh" class="container-flex">
                     <iframe id="iframe" style="width: 100%; height: 100%; border: none" src=""></iframe>
                 </div>
             </div>
-        </div> 
-    </div>
+        </div>     
     </div>
 <script>
     function toggle_show(folder_id){
@@ -85,10 +115,19 @@
             }
             else {
                 
-                    entries[i].style.display = "block";
+                    entries[i].style.display = "table-row";
                 
             }
         }
+    }
+
+    function toggle_active(itemid){
+        var all_items = document.getElementsByClassName("table-active");
+        var current_item = document.getElementById(itemid);
+        for (var i = 0; i<all_items.length; i++) {
+            all_items[i].classList.toggle('table-active');
+        }
+        current_item.classList.toggle('table-active');
     }
 
     function change_iframe_src(link_id){

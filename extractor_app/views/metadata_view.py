@@ -25,7 +25,7 @@ def handle_search(database):
         )
         unique_headers.append(
             database.execute(
-                f"SELECT FolderID, PatientName, PatientID, StudyDate, PatientBirthDate FROM SpecimenSession WHERE FolderID = {id[0]} GROUP BY FolderID"
+                f"SELECT FolderID, PatientName, PatientID, StudyDate, AccessionNumber FROM SpecimenSession WHERE FolderID = {id[0]} GROUP BY FolderID"
             ).fetchall()[0]
         )
     session_list = [item for row in search_session_list for item in row]
@@ -50,7 +50,7 @@ def home():
     ).fetchall()
 
     unique_headers = database.execute(
-        "SELECT FolderID, PatientName, PatientID, StudyDate, PatientBirthDate FROM SpecimenSession GROUP BY FolderID"
+        "SELECT FolderID, PatientName, PatientID, StudyDate, AccessionNumber FROM SpecimenSession GROUP BY FolderID"
     ).fetchall()
 
     custom_data = database.execute(f"SELECT * FROM CustomData")

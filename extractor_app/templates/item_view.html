@@ -3,60 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href={{url_for("static", filename="semantic.min.css")}}>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <style>
-        ul {
-            list-style-type: none;
-            margin-left: 12px;
-        }
-        li {
-            font-family: Lato;
-            margin-top: 8px;
-        }
     </style>
 </head>
 <body>
-    <iframe id="iframe" style="margin-left: 12px; border: none" src="../../thumbnail/{{item_SpecimenSession[0]['StudyInstanceUID']}}/{{item_SpecimenSession[0]['ImageFileName']}}"></iframe>
-    <div>
-    <a href="../../image_view/{{item_SpecimenSession[0]['StudyInstanceUID']}}/{{item_SpecimenSession[0]['ImageFileName']}}"  target="_blank">
-        <button class="ui green button">View Full Image</button>
-    </a>
-    <a href="edit">
-        <button class="ui green button">Edit Metadata</button>
-    </a>
-    </div>
-    
-    <ul>
-        {% for key in item_SpecimenSession[0].keys() %}
-        <li><b>{{key}}</b> = {{item_SpecimenSession[0][key]}}</li>
-        {% endfor %}
-
-        <li>
-            <b>SpecimenDescriptionSequence: </b>
-            <ul>
-            {% for key in item_SpecimenDescriptionSequence[0].keys() %}
-            <li><b>{{key}}</b> = {{item_SpecimenDescriptionSequence[0][key]}}</li>
+    <div class="container-flex">
+        <div class="row mt-3">
+            <div class="btn-group">
+                <a class="btn btn-success active" href="../../image_view/{{item_SpecimenSession[0]['StudyInstanceUID']}}/{{item_SpecimenSession[0]['ImageFileName']}}"  target="_blank">View Full Image</a>
+                <a class="btn btn-success" href="edit">Edit Metadata</a>
+            </div>
+        </div>
+        <div class="row">
+            <iframe id="iframe" style="margin-left: 12px; border: none; overflow:hidden" src="../../thumbnail/{{item_SpecimenSession[0]['StudyInstanceUID']}}/{{item_SpecimenSession[0]['ImageFileName']}}"></iframe>
+        </div>
+        <ul class="list-group">
+            {% for key in item_SpecimenSession[0].keys() %}
+            <li class="list-group-item"><b>{{key}}</b> = {{item_SpecimenSession[0][key]}}</li>
             {% endfor %}
-            
-            <li>
-                <b>PrimaryAnatomicStructureSequence: </b>
-                <ul>
-                {% for key in item_PrimaryAnatomicStructureSequence[0].keys() %}
-                <li><b>{{key}}</b> = {{item_PrimaryAnatomicStructureSequence[0][key]}}</li>
+
+            <li class="list-group-item">
+                <b>SpecimenDescriptionSequence: </b>
+                <ul class="list-group">
+                {% for key in item_SpecimenDescriptionSequence[0].keys() %}
+                <li class="list-group-item"><b>{{key}}</b> = {{item_SpecimenDescriptionSequence[0][key]}}</li>
                 {% endfor %}
                 
-                </ul>
+                <li class="list-group-item">
+                    <b>PrimaryAnatomicStructureSequence: </b>
+                    <ul class="list-group">
+                    {% for key in item_PrimaryAnatomicStructureSequence[0].keys() %}
+                    <li class="list-group-item"><b>{{key}}</b> = {{item_PrimaryAnatomicStructureSequence[0][key]}}</li>
+                    {% endfor %}
+                    
+                    </ul>
+                </li>
+            </ul>
             </li>
-        </ul>
-        </li>
-        <b>CustomData: </b>
-        <ul>
-            {% for key in item_CustomData[0].keys() %}
-            <li><b>{{key}}</b> = {{item_CustomData[0][key]}}</li>
-            {% endfor %}
-        </ul>
+            <b>CustomData: </b>
+            <ul class="list-group">
+                {% for key in item_CustomData[0].keys() %}
+                <li class="list-group-item"><b>{{key}}</b> = {{item_CustomData[0][key]}}</li>
+                {% endfor %}
+            </ul>
 
-    </ul>
+        </ul>
+    </div>
 </body>
 <script>
     var iframe = document.getElementById("iframe");
