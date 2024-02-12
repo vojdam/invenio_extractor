@@ -10,6 +10,10 @@
             --bs-table-color-state: var(--bs-table-active-color);
             --bs-table-bg-state: var(--bs-table-active-bg);
         } 
+
+        .col{
+            height: calc(100vh - 71px);
+        }
     </style>
 </head>
 <body>
@@ -44,7 +48,7 @@
 
     <div style="background-color: #ffffff" class="container-flex">
         <div class="row g-0 ">
-            <div class="col border-end border-dark" style="height: 95vh;overflow:auto;">
+            <div class="col border-end border-dark" style="overflow:auto;">
                 <table class="table table-bordered table-hover">
                 <thead class="sticky-top">
                     <tr class="table-secondary">
@@ -67,7 +71,7 @@
                 </table>
             </div>
 
-            <div class="col border-end border-dark" style="height: 95vh;overflow:auto;">
+            <div class="col border-end border-dark" style="overflow:auto;">
                 <table class="table table-bordered table-hover">
                 <thead class="sticky-top">
                     <tr class="table-secondary">
@@ -91,7 +95,7 @@
                 </tbody>
                 </table>
             </div>
-            <div class="col" style="overflow:hidden; height: 95vh;">
+            <div class="col" style="overflow:hidden">
                 <div style="background-color: #ffffff;height: 100%" class="container-flex">
                     <iframe id="iframe" style="width: 100%; height: 100%; border: none" src=""></iframe>
                 </div>
