@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="row">
-            <iframe id="iframe" style="margin-left: 12px; border: none" src="../../thumbnail/{{item_SpecimenSession[0]['StudyInstanceUID']}}/{{item_SpecimenSession[0]['ImageFileName']}}"></iframe>
+            <iframe id="iframe" style="margin-left: 12px; border: none; overflow:hidden" src="../../thumbnail/{{item_SpecimenSession[0]['StudyInstanceUID']}}/{{item_SpecimenSession[0]['ImageFileName']}}"></iframe>
         </div>
         <ul class="list-group">
             {% for key in item_SpecimenSession[0].keys() %}

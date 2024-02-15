@@ -34,6 +34,7 @@ def create_app(test_config: str = None):
         image_view,
         updater_view,
         editor_view,
+        downloader_view,
     )
 
     app.register_blueprint(metadata_view.bp)
@@ -41,6 +42,7 @@ def create_app(test_config: str = None):
     app.register_blueprint(image_view.bp)
     app.register_blueprint(updater_view.bp)
     app.register_blueprint(editor_view.bp)
+    app.register_blueprint(downloader_view.bp)
 
     # from extractor_app.metadata_extractor import MetadataExtractor as ME
 
