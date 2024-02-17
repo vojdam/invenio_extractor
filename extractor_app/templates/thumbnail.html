@@ -6,6 +6,7 @@
         padding:0;
         margin:0;
         border:0;
+        overflow: hidden;
     }
 </style>
 </head>
@@ -13,4 +14,12 @@
 <img id="thumbnail" src = {{image}} />
 
 </body>
+<script>
+    var thumb = document.getElementById("thumbnail");
+    thumb.onload = function(){
+        var positionInfo = thumb.getBoundingClientRect();
+        thumb.style.marginLeft = positionInfo.width + 'px';
+        thumb.style.marginRight = positionInfo.width + 'px';
+    }
+</script>
 </html>
