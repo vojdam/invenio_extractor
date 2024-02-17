@@ -6,11 +6,6 @@
     <title>InveNIO Metadata Viewer</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <style>
-        tbody tr:focus{
-            --bs-table-color-state: var(--bs-table-active-color);
-            --bs-table-bg-state: var(--bs-table-active-bg);
-        } 
-
         .col{
             height: calc(100vh - 71px);
         }
@@ -84,7 +79,7 @@
                 </thead>   
                 <tbody>
                 {% for session in session_list %}
-                    <tr tabindex="{{session['SpecimenSessionID']}}" id="entry{{session['SpecimenSessionID']}}" onclick="change_iframe_src('/metadata/{{session['SpecimenSessionID']}}');" style="display:none; cursor:pointer" class="entry folder{{session['FolderID']}}">
+                    <tr tabindex="{{session['SpecimenSessionID']}}" id="entry{{session['SpecimenSessionID']}}" onclick="change_iframe_src('/metadata/{{session['SpecimenSessionID']}}');toggle_active('entry{{session['SpecimenSessionID']}}')" style="display:none; cursor:pointer" class="entry folder{{session['FolderID']}}">
                         <td>{{session["PatientName"][15:-1]}}</td>
                         <td>{{session["ImageID"]}}</td>
                         <td>{% if session["PhotometricInterpretation"] == "RGB" %}RGB{%else%}B/W{%endif%}</td>
@@ -113,7 +108,6 @@
 
         for(var i = 0; i<entries.length; i++){
             if (entries[i].style.display != "none") {
-                
                 entries[i].style.display = "none";
                 
             }
@@ -129,6 +123,9 @@
         var all_items = document.getElementsByClassName("table-active");
         var current_item = document.getElementById(itemid);
         for (var i = 0; i<all_items.length; i++) {
+            if(current_item.id[0] != all_items[i].id[0]){
+                continue;
+            }
             all_items[i].classList.toggle('table-active');
         }
         current_item.classList.toggle('table-active');
