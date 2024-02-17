@@ -13,15 +13,15 @@ class FileExporter:
         self.file_name = file_name
         cf_handler = config_handler.ConfigHandler()
         self.images_folder_path, self.database_path = cf_handler.handle_config(
-            "PATHS", "PathToImagesFolder"
+            "PATHS", "PathToImagesFolder", "PathToDatabase"
         )
         self.full_path = os.path.join(self.images_folder_path, self.file_name)
 
-    def read_original_file(self, path: str) -> pydicom.FileDataset:
-        """Reads the specified file using pydicom and returns it"""
-        with pydicom.dcmread(path) as file:
-            original_file = file
-        return original_file
+    # def read_original_file(self, path: str) -> pydicom.FileDataset:
+    #     """Reads the specified file using pydicom and returns it"""
+    #     with pydicom.dcmread(path) as file:
+    #         original_file = file
+    #     return original_file
 
     def create_temporary_file(self) -> str:
         """Creates a temporary file and returns its path"""
@@ -30,11 +30,19 @@ class FileExporter:
             temporary_directory, os.path.basename(self.file_name)
         )
         shutil.copy(self.full_path, temporary_path)
-        print(temporary_path)
         return temporary_path
 
-    def serve_file(self):
-        return self.create_temporary_file()
+    def serve_file(self, anonymized: bool = True):
+        path = self.create_temporary_file()
+        if anonymized:
+            self.anonymize_file(path)
+        return path
+
+    def anonymize_file(self, path: str) -> None:
+        with pydicom.dcmread(path) as file:
+            file.PatientName = "anonymous"
+            file.PatientBirthDate = " "
+            file.save_as(path)
 
 
 # copy file as tempfile
