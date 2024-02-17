@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InveNIO Metadata Viewer</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src={{url_for('static', filename='sorttable.js')}}></script>
     <style>
         .col{
             height: calc(100vh - 71px);
@@ -44,13 +45,13 @@
     <div style="background-color: #ffffff" class="container-flex">
         <div class="row g-0 ">
             <div class="col border-end border-dark" style="overflow:auto;">
-                <table class="table table-bordered table-hover">
+                <table id="header_table" class="table table-bordered table-hover sortable">
                 <thead class="sticky-top">
                     <tr class="table-secondary">
-                        <th scope="col"><div>StudyDate</div></th>
-                        <th scope="col"><div>PatientName</div></th>
-                        <th scope="col"><div>PatientID</div></th>
-                        <th scope="col"><div>AccessionNumber</div></th>
+                        <th scope="col">StudyDate</th>
+                        <th scope="col">PatientName</th>
+                        <th scope="col">PatientID</th>
+                        <th scope="col">AccessionNumber</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -98,6 +99,7 @@
         </div>     
     </div>
 <script>
+
     function toggle_show(folder_id){
         var entries = document.getElementsByClassName(folder_id);
         var all_items = document.getElementsByClassName("entry");
