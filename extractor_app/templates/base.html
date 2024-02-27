@@ -9,6 +9,23 @@
     <style>
         .col{
             height: calc(100vh - 71px);
+            overflow:auto;
+        }
+        .col-6{
+            height: calc(100vh - 71px);
+            overflow:auto;
+        }
+        .resizer{
+            border:0;
+            padding:0;
+            margin:0;
+            background-color: #9FA6B2;
+            height:14px;
+            line-height: 14px;
+            width:100%;
+            cursor:pointer;
+            text-align: center;
+            color:#fff;
         }
     </style>
 </head>
@@ -44,9 +61,10 @@
 
     <div style="background-color: #ffffff" class="container-flex">
         <div class="row g-0 ">
-            <div class="col border-end border-dark" style="overflow:auto;">
+            <div class="col border-end border-dark" id="col1">
                 <table id="header_table" class="table table-bordered table-hover sortable">
                 <thead class="sticky-top">
+                    <tr style="padding:0;border:0"><th style="padding:0;border:0" scope="col" colspan="4"><div class="resizer" onclick="resize_col('col1')">↔</div></th></tr>
                     <tr class="table-secondary">
                         <th scope="col">StudyDate</th>
                         <th scope="col">PatientName</th>
@@ -56,7 +74,7 @@
                 </thead>
                 <tbody>
                 {% for header_item in unique_headers %}
-                    <tr id="folder{{header_item['FolderID']}}" tabindex="{{header_item['FolderID']}}" onclick="toggle_show('folder{{header_item['FolderID']}}'); change_iframe_src(''); toggle_active('folder{{header_item['FolderID']}}')" style="cursor:pointer">
+                    <tr id="folder{{header_item['FolderID']}}" tabindex="{{header_item['FolderID']}}" onclick="toggle_show('folder{{header_item['FolderID']}}'); change_iframe_src(''); toggle_active('folder{{header_item['FolderID']}}'); resize_col('col2')" style="cursor:pointer">
                         <td>{{header_item["StudyDate"]}}</td>
                         <td>{{header_item["PatientName"][15:-1]}}</td>
                         <td>{{header_item["PatientID"]}}</td>
@@ -67,9 +85,10 @@
                 </table>
             </div>
 
-            <div class="col border-end border-dark" style="overflow:auto;">
+            <div class="col border-end border-dark" id="col2">
                 <table class="table table-bordered table-hover">
                 <thead class="sticky-top">
+                    <tr style="padding:0;border:0"><th style="padding:0;border:0" scope="col" colspan="5"><div class="resizer" onclick="resize_col('col2')">↔</div></th></tr>
                     <tr class="table-secondary">
                         <th scope="col"><div>PatientName</div></th>
                         <th scope="col"><div>ImageID</div></th>
@@ -80,7 +99,7 @@
                 </thead>   
                 <tbody>
                 {% for session in session_list %}
-                    <tr tabindex="{{session['SpecimenSessionID']}}" id="entry{{session['SpecimenSessionID']}}" onclick="change_iframe_src('/metadata/{{session['SpecimenSessionID']}}');toggle_active('entry{{session['SpecimenSessionID']}}')" style="display:none; cursor:pointer" class="entry folder{{session['FolderID']}}">
+                    <tr tabindex="{{session['SpecimenSessionID']}}" id="entry{{session['SpecimenSessionID']}}" onclick="change_iframe_src('/metadata/{{session['SpecimenSessionID']}}');toggle_active('entry{{session['SpecimenSessionID']}}'); resize_col('col3')" style="display:none; cursor:pointer" class="entry folder{{session['FolderID']}}">
                         <td>{{session["PatientName"][15:-1]}}</td>
                         <td>{{session["ImageID"]}}</td>
                         <td>{% if session["PhotometricInterpretation"] == "RGB" %}RGB{%else%}B/W{%endif%}</td>
@@ -91,7 +110,8 @@
                 </tbody>
                 </table>
             </div>
-            <div class="col" style="overflow:hidden">
+            <div class="col" id="col3" style="overflow:hidden">
+                <div class="resizer" onclick="resize_col('col3')">↔</div>
                 <div style="background-color: #ffffff;height: 100%" class="container-flex">
                     <iframe id="iframe" style="width:100%;height: 100%; border: none; overflow-x:hidden" src=""></iframe>
                 </div>
@@ -119,6 +139,22 @@
                 
             }
         }
+    }
+
+    function resize_col(col_id){
+        const all_col_ids = ["col1", "col2", "col3"];
+        console.log(all_col_ids.indexOf(col_id));
+        all_col_ids.splice(all_col_ids.indexOf(col_id), 1);
+        console.log(all_col_ids);
+        all_col_ids.forEach((col) => {
+            console.log(col);
+            var other_col = document.getElementById(col);
+            other_col.classList.remove("col-6");
+            other_col.classList.add("col");        
+        });
+        curr_col = document.getElementById(col_id);
+        curr_col.classList.remove("col");
+        curr_col.classList.add("col-6");
     }
 
     function toggle_active(itemid){
