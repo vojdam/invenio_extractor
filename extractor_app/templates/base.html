@@ -9,11 +9,18 @@
     <style>
         .col{
             height: calc(100vh - 71px);
-            overflow:auto;
+            overflow:hidden;
         }
         .col-6{
             height: calc(100vh - 71px);
+            overflow:hidden;
+        }
+        .tablecont{
             overflow:auto;
+            width:100%;
+            padding:0;
+            margin:0;
+            height:calc(100vh - 85px);
         }
         .resizer{
             border:0;
@@ -62,53 +69,57 @@
     <div style="background-color: #ffffff" class="container-flex">
         <div class="row g-0 ">
             <div class="col border-end border-dark" id="col1">
-                <table id="header_table" class="table table-bordered table-hover sortable">
-                <thead class="sticky-top">
-                    <tr style="padding:0;border:0"><th style="padding:0;border:0" scope="col" colspan="4"><div class="resizer" onclick="resize_col('col1')">↔</div></th></tr>
-                    <tr class="table-secondary">
-                        <th scope="col">StudyDate</th>
-                        <th scope="col">PatientName</th>
-                        <th scope="col">PatientID</th>
-                        <th scope="col">AccessionNumber</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for header_item in unique_headers %}
-                    <tr id="folder{{header_item['FolderID']}}" tabindex="{{header_item['FolderID']}}" onclick="toggle_show('folder{{header_item['FolderID']}}'); change_iframe_src(''); toggle_active('folder{{header_item['FolderID']}}'); resize_col('col2')" style="cursor:pointer">
-                        <td>{{header_item["StudyDate"]}}</td>
-                        <td>{{header_item["PatientName"][15:-1]}}</td>
-                        <td>{{header_item["PatientID"]}}</td>
-                        <td>{{header_item["AccessionNumber"]}}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-                </table>
+                <div class="resizer" onclick="resize_col('col2')">↔</div>
+                <div class="container-fluid tablecont">
+                    <table id="header_table" class="table table-bordered table-hover sortable">
+                    <thead class="sticky-top">
+                        <tr class="table-secondary">
+                            <th scope="col">StudyDate</th>
+                            <th scope="col">PatientName</th>
+                            <th scope="col">PatientID</th>
+                            <th scope="col">AccessionNumber</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for header_item in unique_headers %}
+                        <tr id="folder{{header_item['FolderID']}}" tabindex="{{header_item['FolderID']}}" onclick="toggle_show('folder{{header_item['FolderID']}}'); change_iframe_src(''); toggle_active('folder{{header_item['FolderID']}}'); resize_col('col2')" style="cursor:pointer">
+                            <td>{{header_item["StudyDate"]}}</td>
+                            <td>{{header_item["PatientName"][15:-1]}}</td>
+                            <td>{{header_item["PatientID"]}}</td>
+                            <td>{{header_item["AccessionNumber"]}}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    </table>
+                </div>
             </div>
 
             <div class="col border-end border-dark" id="col2">
-                <table class="table table-bordered table-hover">
-                <thead class="sticky-top">
-                    <tr style="padding:0;border:0"><th style="padding:0;border:0" scope="col" colspan="5"><div class="resizer" onclick="resize_col('col2')">↔</div></th></tr>
-                    <tr class="table-secondary">
-                        <th scope="col"><div>PatientName</div></th>
-                        <th scope="col"><div>ImageID</div></th>
-                        <th scope="col"><div>Color</div></th>
-                        <th scope="col"><div>ContainerIdentifier</div></th>
-                        <th scope="col"><div>SpecimenShortDescription</div></th>
-                    </tr>
-                </thead>   
-                <tbody>
-                {% for session in session_list %}
-                    <tr tabindex="{{session['SpecimenSessionID']}}" id="entry{{session['SpecimenSessionID']}}" onclick="change_iframe_src('/metadata/{{session['SpecimenSessionID']}}');toggle_active('entry{{session['SpecimenSessionID']}}'); resize_col('col3')" style="display:none; cursor:pointer" class="entry folder{{session['FolderID']}}">
-                        <td>{{session["PatientName"][15:-1]}}</td>
-                        <td>{{session["ImageID"]}}</td>
-                        <td>{% if session["PhotometricInterpretation"] == "RGB" %}RGB{%else%}B/W{%endif%}</td>
-                        <td>{{session["ContainerIdentifier"]}}</td>
-                        <td>{{specimen_description_list[loop.index-1]["SpecimenShortDescription"]}}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-                </table>
+                <div class="resizer" onclick="resize_col('col2')">↔</div>
+                <div class="container-fluid tablecont">
+                    <table class="table table-bordered table-hover">
+                    <thead class="sticky-top">
+                        <tr class="table-secondary">
+                            <th scope="col"><div>PatientName</div></th>
+                            <th scope="col"><div>ImageID</div></th>
+                            <th scope="col"><div>Color</div></th>
+                            <th scope="col"><div>ContainerIdentifier</div></th>
+                            <th scope="col"><div>SpecimenShortDescription</div></th>
+                        </tr>
+                    </thead>   
+                    <tbody>
+                    {% for session in session_list %}
+                        <tr tabindex="{{session['SpecimenSessionID']}}" id="entry{{session['SpecimenSessionID']}}" onclick="change_iframe_src('/metadata/{{session['SpecimenSessionID']}}');toggle_active('entry{{session['SpecimenSessionID']}}'); resize_col('col3')" style="display:none; cursor:pointer" class="entry folder{{session['FolderID']}}">
+                            <td>{{session["PatientName"][15:-1]}}</td>
+                            <td>{{session["ImageID"]}}</td>
+                            <td>{% if session["PhotometricInterpretation"] == "RGB" %}RGB{%else%}B/W{%endif%}</td>
+                            <td>{{session["ContainerIdentifier"]}}</td>
+                            <td>{{specimen_description_list[loop.index-1]["SpecimenShortDescription"]}}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    </table>
+                </div>
             </div>
             <div class="col" id="col3" style="overflow:hidden">
                 <div class="resizer" onclick="resize_col('col3')">↔</div>
