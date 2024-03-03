@@ -2,7 +2,7 @@ from flask import Blueprint, render_template
 
 import base64
 from io import BytesIO
-
+import os
 
 from PIL import Image
 
@@ -47,7 +47,7 @@ def image_slices_to_string(img_list: list) -> list:
 @bp.route("/image_view/<folder>/<image_filename>")
 def image_viewer(folder: str, image_filename: str):
     cf_handler = config_handler.ConfigHandler()
-    path = f"{cf_handler.handle_config('PATHS', 'PathToImagesFolder')[0]}/{folder}/{image_filename}"
+    path = os.path.join(cf_handler.handle_config('PATHS', 'PathToImagesFolder')[0],folder,image_filename)
     dataset = pydicom.dcmread(path)
     number_of_slices = int(cf_handler.handle_config("VARS", "NumberOfImgSlices")[0])
     px_array = dataset.pixel_array

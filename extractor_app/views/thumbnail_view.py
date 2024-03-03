@@ -2,6 +2,7 @@ from flask import Blueprint, render_template
 
 import base64
 from io import BytesIO
+import os
 
 from PIL import Image
 
@@ -16,7 +17,7 @@ bp = Blueprint("thumbnail_view", __name__)
 @bp.route("/thumbnail/<folder>/<image_filename>")
 def image_viewer(folder: str, image_filename: str):
     cf_handler = config_handler.ConfigHandler()
-    path = f"{cf_handler.handle_config('PATHS', 'PathToImagesFolder')[0]}/{folder}/{image_filename}"
+    path = os.path.join(cf_handler.handle_config('PATHS', 'PathToImagesFolder')[0],folder,image_filename)
     image_AR_scale = int(cf_handler.handle_config("VARS", "ThumbnailARScale")[0])
     dataset = pydicom.dcmread(path)
     image = Image.fromarray(dataset.pixel_array)

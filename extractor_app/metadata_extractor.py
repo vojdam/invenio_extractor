@@ -52,12 +52,12 @@ class MetadataExtractor:
 
     def _get_metadata(self, folder_path: str) -> list:
         """Saves metadata from a DCM file folder to a list of dicts"""
-        full_folder_path = f"{self.path_to_dicom_folders}\{folder_path}"
+        full_folder_path = os.path.join(self.path_to_dicom_folders, folder_path)
         files_in_folder = os.listdir(full_folder_path)
         dict_meta_list = []
         for file in os_sorted(files_in_folder):
             with dcmread(
-                f"{full_folder_path}\{file}", stop_before_pixels=True
+                os.path.join(full_folder_path,file), stop_before_pixels=True
             ) as dcm_file:
                 dict_meta = dcm_file.to_json_dict()
             if file[6] == "_":
