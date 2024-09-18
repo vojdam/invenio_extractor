@@ -47,17 +47,16 @@ def image_slices_to_string(img_list: list) -> list:
 @bp.route("/image_view/<folder>/<image_filename>")
 def image_viewer(folder: str, image_filename: str):
     cf_handler = config_handler.ConfigHandler()
-    path = os.path.join(cf_handler.handle_config('PATHS', 'PathToImagesFolder')[0],folder,image_filename)
+    path = os.path.join(
+        cf_handler.handle_config("PATHS", "PathToImagesFolder")[0],
+        folder,
+        image_filename,
+    )
     dataset = pydicom.dcmread(path)
     number_of_slices = int(cf_handler.handle_config("VARS", "NumberOfImgSlices")[0])
     px_array = dataset.pixel_array
-    # handle main RGB slide images
-    if (
-        image_filename[4:7] == "_1_"
-        and len(px_array.shape) == 3
-        or image_filename[4:7] == "_2_"
-        and len(px_array.shape) == 3
-    ):
+    # handle main slide images (checks for images larger than 1000x1000px)
+    if px_array.shape[0] > 1000 and px_array.shape[1] > 1000:
         image_slices = slice_image(px_array, number_of_slices)
         string_list = image_slices_to_string(image_slices)
     # handle other images
@@ -67,5 +66,8 @@ def image_viewer(folder: str, image_filename: str):
         string_list = image_slices_to_string(img_list)
 
     return render_template(
-        "image_view.html", images=string_list, img_height=len(px_array)
+        "image_view.html",
+        images=string_list,
+        img_height=px_array.shape[0],
+        img_width=px_array.shape[1],
     )
