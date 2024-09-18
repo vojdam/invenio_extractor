@@ -5,10 +5,11 @@ from . import db
 
 
 @click.command("update-db")
-def update_database() -> None:
+@click.option("-r", "--renew", default=False, required=False)
+def update_database(renew=False) -> None:
     """Updates the database"""
     me = metadata_extractor.MetadataExtractor()
-    me.loop_through_instances()
+    me.loop_through_instances(force_renew=renew)
 
 
 @click.command("init-db")

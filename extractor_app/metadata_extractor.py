@@ -57,7 +57,7 @@ class MetadataExtractor:
         dict_meta_list = []
         for file in os_sorted(files_in_folder):
             with dcmread(
-                os.path.join(full_folder_path,file), stop_before_pixels=True
+                os.path.join(full_folder_path, file), stop_before_pixels=True
             ) as dcm_file:
                 dict_meta = dcm_file.to_json_dict()
             if file[6] == "_":
@@ -83,7 +83,7 @@ class MetadataExtractor:
             new_all_keys.append(dictionary_keyword(key))
             # check for nested dicts
             if (
-                type(full_dict[key]) == dict
+                type(full_dict[key]) is dict
                 and full_dict[key].get("vr") == "SQ"
                 and not full_dict[key].get("Value") == []
             ):
@@ -141,7 +141,7 @@ class MetadataExtractor:
         max_folder_id = database.execute(
             "SELECT MAX(FolderID) FROM SpecimenSession"
         ).fetchall()
-        if max_folder_id[0][0] == None:
+        if max_folder_id[0][0] is None:
             max_folder_id_int = 0
         else:
             max_folder_id_int = int(max_folder_id[0][0])
