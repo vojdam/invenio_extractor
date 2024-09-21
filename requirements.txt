@@ -1,5 +1,6 @@
-Pillow
-flask
-numpy
-pydicom
-natsort
+Pillow==10.4.0
+flask==3.0.3
+numpy==2.0.1
+pydicom==2.4.4
+natsort==8.4.0
+gunicorn==21.2.0

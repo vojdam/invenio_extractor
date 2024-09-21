@@ -1,0 +1,11 @@
+instance/
+.git/
+.venv/
+__pycache__/
+
+
+*.bat
+pyproject.toml
+README.md
+LICENSE
+.dockerignore
