@@ -5,6 +5,7 @@ import logging
 import sqlite3
 from . import config_handler
 from natsort import os_sorted
+from . import image_generator
 
 
 class MetadataExtractor:
@@ -109,6 +110,17 @@ class MetadataExtractor:
             logging.info(f"Starting metadata extraction out of folder: {folder}")
             for dictionary in full_meta:
                 translated_dictionary = self._translate_codes(dictionary)
+                if (
+                    translated_dictionary["PhotometricInterpretation"].get("Value")[0]
+                    == "RGB"
+                ):
+                    self.generate_thumb_and_tiff(
+                        os.path.join(
+                            self.path_to_dicom_folders,
+                            folder,
+                            translated_dictionary["ImageFileName"],
+                        )
+                    )
 
                 # write to db:
                 self.write_to_database(
@@ -128,6 +140,10 @@ class MetadataExtractor:
                 )
             folder_id += 1
         logging.info("Metadata saved successfully!")
+
+    def generate_thumb_and_tiff(self, img_path: str) -> None:
+        img = image_generator.HEImage(img_path)
+        img.create_thumbnail()
 
     def _check_for_changes(self):
         """Compares written image folders and available image folders"""

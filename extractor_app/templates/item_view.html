@@ -21,7 +21,7 @@
             </div>
         </div>
         <div class="row my-2 justify-content-center">
-            <iframe id="iframe" style="overflow:hidden;" scrolling="no" src="../../thumbnail/{{item_SpecimenSession[0]['StudyInstanceUID']}}/{{item_SpecimenSession[0]['ImageFileName']}}"></iframe>
+        <img src="{{url_for('static', filename='resources/thumbnails/'+item_SpecimenSession[0].StudyInstanceUID+'/'+item_SpecimenSession[0].ImageFileName[:-4]+'.jpg')}}" alt="" style="width: 200px">
         </div>
         <ul class="list-group">
             {% for key in item_SpecimenSession[0].keys() %}

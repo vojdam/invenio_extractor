@@ -30,7 +30,6 @@ def create_app(test_config: str = None):
 
     from extractor_app.views import (
         metadata_view,
-        thumbnail_view,
         image_view,
         updater_view,
         editor_view,
@@ -38,7 +37,6 @@ def create_app(test_config: str = None):
     )
 
     app.register_blueprint(metadata_view.bp)
-    app.register_blueprint(thumbnail_view.bp)
     app.register_blueprint(image_view.bp)
     app.register_blueprint(updater_view.bp)
     app.register_blueprint(editor_view.bp)
