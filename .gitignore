@@ -18,3 +18,5 @@ build/
 extractor_app/metadata.csv
 extractor_app/rawmetadata.csv
 extractor_app/convert.ipynb
+
+static/resources/
