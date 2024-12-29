@@ -85,7 +85,7 @@
                     {% for header_item in unique_headers %}
                         <tr id="folder{{header_item['FolderID']}}" tabindex="{{header_item['FolderID']}}" onclick="toggle_show('folder{{header_item['FolderID']}}'); change_iframe_src(''); toggle_active('folder{{header_item['FolderID']}}'); resize_col('col2')" style="cursor:pointer">
                             <td>{{header_item["StudyDate"]}}</td>
-                            <td>{{header_item["PatientName"]}}</td>
+                            <td>{{header_item["PatientName"][12:]}}</td>
                             <td>{{header_item["PatientID"]}}</td>
                             <td>{{header_item["AccessionNumber"]}}</td>
                         </tr>
@@ -111,7 +111,7 @@
                     <tbody>
                     {% for session in session_list %}
                         <tr tabindex="{{session['SpecimenSessionID']}}" id="entry{{session['SpecimenSessionID']}}" onclick="change_iframe_src('/metadata/{{session['SpecimenSessionID']}}');toggle_active('entry{{session['SpecimenSessionID']}}'); resize_col('col3')" style="display:none; cursor:pointer" class="entry folder{{session['FolderID']}}">
-                            <td>{{session["PatientName"]}}</td>
+                            <td>{{session["PatientName"][12:]}}</td>
                             <td>{{session["ImageID"]}}</td>
                             <td>{% if session["PhotometricInterpretation"] == "RGB" %}RGB{%else%}B/W{%endif%}</td>
                             <td>{{session["ContainerIdentifier"]}}</td>
