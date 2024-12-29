@@ -35,3 +35,15 @@ class HEImage:
         except FileExistsError:
             pass
         image.save(thumb_path)
+
+    def create_tiff(self):
+        tiff_path = os.path.join(
+            self.base_path, "tiff", self.foldername, f"{self.filename}.tiff"
+        )
+        image = Image.fromarray(self.px_array)
+        logging.info(f"Saving TIFF image: {tiff_path}")
+        try:
+            os.makedirs(os.path.split(tiff_path)[0])
+        except FileExistsError:
+            pass
+        image.save(tiff_path)

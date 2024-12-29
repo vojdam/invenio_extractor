@@ -119,7 +119,9 @@ class MetadataExtractor:
                             self.path_to_dicom_folders,
                             folder,
                             translated_dictionary["ImageFileName"],
-                        )
+                        ),
+                        translated_dictionary["Rows"].get("Value")[0] == 496
+                        and translated_dictionary["Columns"].get("Value")[0] == 496,
                     )
 
                 # write to db:
@@ -141,9 +143,11 @@ class MetadataExtractor:
             folder_id += 1
         logging.info("Metadata saved successfully!")
 
-    def generate_thumb_and_tiff(self, img_path: str) -> None:
+    def generate_thumb_and_tiff(self, img_path: str, only_thumb: bool = True) -> None:
         img = image_generator.HEImage(img_path)
         img.create_thumbnail()
+        if not only_thumb:
+            img.create_tiff()
 
     def _check_for_changes(self):
         """Compares written image folders and available image folders"""
@@ -177,7 +181,15 @@ class MetadataExtractor:
             if key == "ImageID" or key == "ImageFileName":
                 new_values.append(value)
                 continue
-            new_values.append(str(value.get("Value", "   "))[2:-2])
+            new_values.append(
+                str(value.get("Value", " "))
+                .replace("[", "")
+                .replace("]", "")
+                .replace("'", "")
+                .replace("{", "")
+                .replace("}", "")
+                .replace("^", " ")
+            )
         meta_dict = dict(zip(meta_dict.keys(), new_values))
         meta_dict["FolderID"] = folder_id
         # format dates:
