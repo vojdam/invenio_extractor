@@ -12,10 +12,13 @@ bp = Blueprint("downloader_view", __name__)
 def downloader(item_id: int):
     database = db.get_db()
     anonymize = request.args.get("anonymize")
+    tiff = request.args.get("tiff")
     filename_sql = database.execute(
         f"SELECT StudyInstanceUID, ImageFileName FROM SpecimenSession WHERE SpecimenSessionID = {item_id}"
     ).fetchone()
     filename = "/".join(filename_sql)
+    if tiff:
+        filename = f"{os.path.splitext(filename)[0]}.tiff"
     fe = file_exporter.FileExporter(filename)
     tmp = fe.serve_file(anonymized=anonymize)
     print(f"Serving file: {filename}")

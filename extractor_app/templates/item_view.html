@@ -4,20 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <style>
-        *{
-        overflow-x:hidden;
-        }
-    </style>
 </head>
 <body>
     <div class="container-flex mx-1">
         <div class="row justify-content-start g-0 mt-3">
-            <div class="btn-group">
-                <a class="btn btn-outline-success" href="../../image_view/{{item_SpecimenSession[0]['StudyInstanceUID']}}/{{item_SpecimenSession[0]['ImageFileName']}}" target="_blank" role="a">View Image</a>
-                <a class="btn btn-outline-success" href="edit" role="a">Edit</a>
-                <a class="btn btn-outline-success" href="download?anonymize=False" role="a">Download</a>
-                <a class="btn btn-outline-success" href="download?anonymize=True" role="a">Download Anonymized</a>
+            <div class="btn-group" role="group">
+                <a type="button" class="btn btn-outline-success" href="../../image_view/{{item_SpecimenSession[0]['StudyInstanceUID']}}/{{item_SpecimenSession[0]['ImageFileName']}}" target="_blank" role="a">View Image</a>
+                <a type="button" class="btn btn-outline-success" href="edit" role="a">Edit</a>
+
+                <div class="btn-group" role="group">
+                  <button type="button" class="btn btn-outline-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Downloads
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="download?anonymize=False">Download DICOM</a></li>
+                    <li><a class="dropdown-item" href="download?anonymize=True" >Download Anonymized DICOM</a></li>
+              {% if item_SpecimenSession[0]["Rows"] != 496 and item_SpecimenSession[0]["PhotometricInterpretation"] == "RGB" %}
+                    <li><a class="dropdown-item" href="download?tiff=True&anonymize=False">Download TIFF</a></li>
+              {% endif %}      
+                  </ul>
+                </div>
             </div>
         </div>
         <div class="row my-2 justify-content-center">
@@ -55,6 +61,7 @@
 
         </ul>
     </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 <script>
     var iframe = document.getElementById("iframe");
