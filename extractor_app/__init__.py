@@ -1,7 +1,8 @@
 import os
 
 
-from flask import Flask
+from flask import Flask, request, abort
+from . import config_handler
 
 
 def create_app(test_config: str = None):
@@ -18,6 +19,10 @@ def create_app(test_config: str = None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
+
+    allowed_ip_list = (
+        config_handler.ConfigHandler().handle_config("VARS", "AllowedIPs")[0]
+    ).split(", ")
 
     from . import db
 
@@ -41,6 +46,14 @@ def create_app(test_config: str = None):
     app.register_blueprint(updater_view.bp)
     app.register_blueprint(editor_view.bp)
     app.register_blueprint(downloader_view.bp)
+
+    @app.before_request
+    def limit_remote_addr():
+        client_ip = str(request.remote_addr)
+        print(f"Requesting access from: {client_ip}")
+
+        if client_ip not in allowed_ip_list:
+            abort(403)
 
     # from extractor_app.metadata_extractor import MetadataExtractor as ME
 
