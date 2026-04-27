@@ -7,8 +7,9 @@ from .. import db
 bp = Blueprint("updater_view", __name__)
 
 
-@bp.route("/update")
+@bp.route("/update", methods=["POST"])
 def update():
-    me = ME()
     db.create_custom_data_table()
-    return render_template("updater.html", update_db=me.loop_through_instances)
+    me = ME()
+    me.loop_through_instances()
+    return render_template("updater.html")
