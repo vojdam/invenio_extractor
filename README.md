@@ -80,7 +80,7 @@ Clone the repository:
 git clone https://github.com/vojdam/invenio_extractor.git
 cd invenio_extractor
 ```
-Edit the ```config.ini``` file and specify paths!
+Edit the ```config.ini``` file and specify paths! Also change the secret key in ```__init__.py```!
 
 Run the ```setup.sh``` or ```setup.bat``` helper script to create a virtual environment, initialize and update the database.
 
