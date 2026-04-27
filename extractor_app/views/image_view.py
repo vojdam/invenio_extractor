@@ -43,7 +43,6 @@ def image_slices_to_string(img_list: list) -> list:
     return str_list
 
 
-@bp.route("/image_view/")
 @bp.route("/image_view/<folder>/<image_filename>")
 def image_viewer(folder: str, image_filename: str):
     cf_handler = config_handler.ConfigHandler()

@@ -77,7 +77,6 @@ def home():
     )
 
 
-@bp.route("/metadata/")
 @bp.route("/metadata/<int:item_id>/")
 def metadata_view_page(item_id: int):
     database = db.get_db()
