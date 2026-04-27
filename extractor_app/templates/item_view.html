@@ -17,10 +17,10 @@
                     Downloads
                   </button>
                   <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="download?anonymize=False">Download DICOM</a></li>
-                    <li><a class="dropdown-item" href="download?anonymize=True" >Download Anonymized DICOM</a></li>
+                    <li><a class="dropdown-item" href="download?anonymize=false">Download DICOM</a></li>
+                    <li><a class="dropdown-item" href="download?anonymize=true" >Download Anonymized DICOM</a></li>
               {% if item_SpecimenSession[0]["Rows"] != 496 and item_SpecimenSession[0]["PhotometricInterpretation"] == "RGB" %}
-                    <li><a class="dropdown-item" href="download?tiff=True&anonymize=False">Download TIFF</a></li>
+                    <li><a class="dropdown-item" href="download?tiff=true&anonymize=false">Download TIFF</a></li>
               {% endif %}      
                   </ul>
                 </div>

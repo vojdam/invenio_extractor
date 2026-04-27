@@ -11,8 +11,8 @@ bp = Blueprint("downloader_view", __name__)
 @bp.route("/metadata/<int:item_id>/download")
 def downloader(item_id: int):
     database = db.get_db()
-    anonymize = request.args.get("anonymize")
-    tiff = request.args.get("tiff")
+    anonymize = request.args.get("anonymize", "false").lower() == "true"
+    tiff = request.args.get("tiff", "false").lower() == "true"
     filename_sql = database.execute(
         f"SELECT StudyInstanceUID, ImageFileName FROM SpecimenSession WHERE SpecimenSessionID = {item_id}"
     ).fetchone()
