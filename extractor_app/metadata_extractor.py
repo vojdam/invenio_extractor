@@ -11,9 +11,15 @@ from . import image_generator
 class MetadataExtractor:
     def __init__(self) -> None:
         cf_handler = config_handler.ConfigHandler()
-        (self.database_path, self.path_to_dicom_folders) = cf_handler.handle_config(
+        database_path, images_path = cf_handler.handle_config(
             "PATHS", "PathToDatabase", "PathToImagesFolder"
         )
+
+        self.database_path = cf_handler.resolve_project_path(database_path)
+        self.path_to_dicom_folders = cf_handler.resolve_project_path(images_path)
+
+        self.database_path.parent.mkdir(parents=True, exist_ok=True)
+
         logging.basicConfig(level=logging.INFO)
         self.sql_string_SpecimenSession = """INSERT INTO SpecimenSession (SpecificCharacterSet, ImageType, SOPClassUID, 
             SOPInstanceUID, StudyDate, SeriesDate, StudyTime, SeriesTime, AccessionNumber, 
@@ -101,46 +107,58 @@ class MetadataExtractor:
             folders, folder_id = self._check_for_changes()
             if folders == os.listdir(self.path_to_dicom_folders):
                 folder_id = 1
+        with sqlite3.connect(self.database_path) as database:
+            for folder in folders:
+                try:
+                    full_meta = self._get_metadata(folder)
+                except NotADirectoryError:
+                    continue
 
-        for folder in folders:
-            try:
-                full_meta = self._get_metadata(folder)
-            except NotADirectoryError:
-                continue
-            logging.info(f"Starting metadata extraction out of folder: {folder}")
-            for dictionary in full_meta:
-                translated_dictionary = self._translate_codes(dictionary)
-                if (
-                    translated_dictionary["PhotometricInterpretation"].get("Value")[0]
-                    == "RGB"
-                ):
-                    self.generate_thumb_and_tiff(
-                        os.path.join(
-                            self.path_to_dicom_folders,
-                            folder,
-                            translated_dictionary["ImageFileName"],
-                        ),
-                        translated_dictionary["Rows"].get("Value")[0] == 496
-                        and translated_dictionary["Columns"].get("Value")[0] == 496,
+                logging.info(f"Starting metadata extraction out of folder: {folder}")
+
+                for dictionary in full_meta:
+                    translated_dictionary = self._translate_codes(dictionary)
+                    if (
+                        translated_dictionary["PhotometricInterpretation"].get("Value")[
+                            0
+                        ]
+                        == "RGB"
+                    ):
+                        self.generate_thumb_and_tiff(
+                            os.path.join(
+                                self.path_to_dicom_folders,
+                                folder,
+                                translated_dictionary["ImageFileName"],
+                            ),
+                            translated_dictionary["Rows"].get("Value")[0] == 496
+                            and translated_dictionary["Columns"].get("Value")[0] == 496,
+                        )
+
+                    # write to db:
+                    self.write_to_database(
+                        database,
+                        translated_dictionary,
+                        self.sql_string_SpecimenSession,
+                        folder_id,
+                        "SpecimenSession",
                     )
-
-                # write to db:
-                self.write_to_database(
-                    translated_dictionary, self.sql_string_SpecimenSession, folder_id
-                )
-                self.write_to_database(
-                    translated_dictionary["SpecimenDescriptionSequence"],
-                    self.sql_string_SpecimenDescriptionSequence,
-                    folder_id,
-                )
-                self.write_to_database(
-                    translated_dictionary["SpecimenDescriptionSequence"][
-                        "PrimaryAnatomicStructureSequence"
-                    ],
-                    self.sql_string_PrimaryAnatomicStructureSequence,
-                    folder_id,
-                )
-            folder_id += 1
+                    self.write_to_database(
+                        database,
+                        translated_dictionary["SpecimenDescriptionSequence"],
+                        self.sql_string_SpecimenDescriptionSequence,
+                        folder_id,
+                        "SpecimenDescriptionSequence",
+                    )
+                    self.write_to_database(
+                        database,
+                        translated_dictionary["SpecimenDescriptionSequence"][
+                            "PrimaryAnatomicStructureSequence"
+                        ],
+                        self.sql_string_PrimaryAnatomicStructureSequence,
+                        folder_id,
+                        "PrimaryAnatomicStructureSequence",
+                    )
+                folder_id += 1
         logging.info("Metadata saved successfully!")
 
     def generate_thumb_and_tiff(self, img_path: str, only_thumb: bool = True) -> None:
@@ -151,16 +169,16 @@ class MetadataExtractor:
 
     def _check_for_changes(self):
         """Compares written image folders and available image folders"""
-        database = sqlite3.connect(self.database_path)
-        cursor = database.cursor()
-        written_folders_sql = cursor.execute(
-            "SELECT DISTINCT StudyInstanceUID FROM SpecimenSession"
-        ).fetchall()
-        written_folders = [folder[0][:] for folder in written_folders_sql]
+        with sqlite3.connect(self.database_path) as database:
+            cursor = database.cursor()
+            written_folders_sql = cursor.execute(
+                "SELECT DISTINCT StudyInstanceUID FROM SpecimenSession"
+            ).fetchall()
 
-        max_folder_id = database.execute(
-            "SELECT MAX(FolderID) FROM SpecimenSession"
-        ).fetchall()
+            max_folder_id = database.execute(
+                "SELECT MAX(FolderID) FROM SpecimenSession"
+            ).fetchall()
+        written_folders = [folder[0][:] for folder in written_folders_sql]
         if max_folder_id[0][0] is None:
             max_folder_id_int = 0
         else:
@@ -172,10 +190,14 @@ class MetadataExtractor:
         return folder_difference, max_folder_id_int + 1
 
     def write_to_database(
-        self, meta_dict: dict, sql_string: str, folder_id: int
+        self,
+        database: sqlite3.Connection,
+        meta_dict: dict,
+        sql_string: str,
+        folder_id: int,
+        table_name: str,
     ) -> None:
         """Write to a SQL database"""
-        database = sqlite3.connect(self.database_path)
         new_values = []
         for key, value in meta_dict.items():
             if key == "ImageID" or key == "ImageFileName":
@@ -201,13 +223,18 @@ class MetadataExtractor:
             )
             meta_dict["StudyDate"] = self.format_date(meta_dict["StudyDate"])
             meta_dict["SeriesDate"] = self.format_date(meta_dict["SeriesDate"])
-
         cursor = database.cursor()
-        cursor.execute(
-            sql_string,
-            meta_dict,
-        )
-        database.commit()
+
+        try:
+            cursor.execute(sql_string, meta_dict)
+        except sqlite3.Error:
+            logging.exception(
+                "Failed while writing table %s. Database path: %s. Metadata keys: %s",
+                table_name,
+                self.database_path,
+                sorted(meta_dict.keys()),
+            )
+            raise
 
 
 # TESTING
