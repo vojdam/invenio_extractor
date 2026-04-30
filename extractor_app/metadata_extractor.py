@@ -134,15 +134,22 @@ class MetadataExtractor:
                         ]
                         == "RGB"
                     ):
-                        self.generate_thumb_and_tiff(
-                            os.path.join(
-                                self.path_to_dicom_folders,
-                                folder,
+                        try:
+                            self.generate_thumb_and_tiff(
+                                os.path.join(
+                                    self.path_to_dicom_folders,
+                                    folder,
+                                    translated_dictionary["ImageFileName"],
+                                ),
+                                translated_dictionary["Rows"].get("Value")[0] == 496
+                                and translated_dictionary["Columns"].get("Value")[0] == 496,
+                            )
+                        except Exception as e:
+                            logging.warning(
+                                "Failed to generate thumbnail and tiff for image: %s. Error: %s",
                                 translated_dictionary["ImageFileName"],
-                            ),
-                            translated_dictionary["Rows"].get("Value")[0] == 496
-                            and translated_dictionary["Columns"].get("Value")[0] == 496,
-                        )
+                                str(e),
+                            )
 
                     # write to db:
                     self.write_to_database(
