@@ -63,10 +63,14 @@ class MetadataExtractor:
         files_in_folder = os.listdir(full_folder_path)
         dict_meta_list = []
         for file in os_sorted(files_in_folder):
+            if not file.endswith(".dcm"):
+                continue
             with dcmread(
                 os.path.join(full_folder_path, file), stop_before_pixels=True
             ) as dcm_file:
                 dict_meta = dcm_file.to_json_dict()
+            if "00400560" not in dict_meta: # check if SpecimenDescriptionSequence is present, if not, then it's a non-extracted file
+                continue
             if file[6] == "_":
                 dict_meta["ImageID"] = file[:6]
             else:
@@ -109,12 +113,12 @@ class MetadataExtractor:
                 folder_id = 1
         with sqlite3.connect(self.database_path) as database:
             for folder in folders:
+                logging.info(f"Starting metadata extraction out of folder: {folder}")
                 try:
                     full_meta = self._get_metadata(folder)
                 except NotADirectoryError:
                     continue
 
-                logging.info(f"Starting metadata extraction out of folder: {folder}")
 
                 for dictionary in full_meta:
                     translated_dictionary = self._translate_codes(dictionary)
