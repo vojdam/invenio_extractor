@@ -65,10 +65,16 @@ class MetadataExtractor:
         for file in os_sorted(files_in_folder):
             if not file.endswith(".dcm"):
                 continue
-            with dcmread(
-                os.path.join(full_folder_path, file), stop_before_pixels=True
-            ) as dcm_file:
-                dict_meta = dcm_file.to_json_dict()
+            try:
+                with dcmread(
+                    os.path.join(full_folder_path, file), stop_before_pixels=True
+                ) as dcm_file:
+                    dict_meta = dcm_file.to_json_dict()
+            except Exception as e:
+                logging.warning(
+                    "Failed to read DICOM file: %s. Error: %s", file, str(e)
+                )
+                continue
             if "00400560" not in dict_meta: # check if SpecimenDescriptionSequence is present, if not, then it's a non-extracted file
                 continue
             if file[6] == "_":
