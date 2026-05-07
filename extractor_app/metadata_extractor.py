@@ -63,10 +63,20 @@ class MetadataExtractor:
         files_in_folder = os.listdir(full_folder_path)
         dict_meta_list = []
         for file in os_sorted(files_in_folder):
-            with dcmread(
-                os.path.join(full_folder_path, file), stop_before_pixels=True
-            ) as dcm_file:
-                dict_meta = dcm_file.to_json_dict()
+            if not file.endswith(".dcm"):
+                continue
+            try:
+                with dcmread(
+                    os.path.join(full_folder_path, file), stop_before_pixels=True
+                ) as dcm_file:
+                    dict_meta = dcm_file.to_json_dict()
+            except Exception as e:
+                logging.warning(
+                    "Failed to read DICOM file: %s. Error: %s", file, str(e)
+                )
+                continue
+            if "00400560" not in dict_meta: # check if SpecimenDescriptionSequence is present, if not, then it's a non-extracted file
+                continue
             if file[6] == "_":
                 dict_meta["ImageID"] = file[:6]
             else:
@@ -109,12 +119,12 @@ class MetadataExtractor:
                 folder_id = 1
         with sqlite3.connect(self.database_path) as database:
             for folder in folders:
+                logging.info(f"Starting metadata extraction out of folder: {folder}")
                 try:
                     full_meta = self._get_metadata(folder)
                 except NotADirectoryError:
                     continue
 
-                logging.info(f"Starting metadata extraction out of folder: {folder}")
 
                 for dictionary in full_meta:
                     translated_dictionary = self._translate_codes(dictionary)
@@ -124,15 +134,22 @@ class MetadataExtractor:
                         ]
                         == "RGB"
                     ):
-                        self.generate_thumb_and_tiff(
-                            os.path.join(
-                                self.path_to_dicom_folders,
-                                folder,
+                        try:
+                            self.generate_thumb_and_tiff(
+                                os.path.join(
+                                    self.path_to_dicom_folders,
+                                    folder,
+                                    translated_dictionary["ImageFileName"],
+                                ),
+                                translated_dictionary["Rows"].get("Value")[0] == 496
+                                and translated_dictionary["Columns"].get("Value")[0] == 496,
+                            )
+                        except Exception as e:
+                            logging.warning(
+                                "Failed to generate thumbnail and tiff for image: %s. Error: %s",
                                 translated_dictionary["ImageFileName"],
-                            ),
-                            translated_dictionary["Rows"].get("Value")[0] == 496
-                            and translated_dictionary["Columns"].get("Value")[0] == 496,
-                        )
+                                str(e),
+                            )
 
                     # write to db:
                     self.write_to_database(
