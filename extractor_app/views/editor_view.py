@@ -22,7 +22,7 @@ def generate_update_table_query(cursor) -> None:
         table_name == "CustomData"
         and len(
             cursor.execute(
-                f"SELECT CustomDataID FROM CustomData WHERE CustomDataID = {item_id}"
+                f"SELECT CustomDataID FROM CustomData WHERE FolderID = {folder_id}"
             ).fetchall()
         )
         == 0
@@ -80,20 +80,14 @@ def editor(item_id: int):
     ).fetchall()
 
     try:
+        folder_id = item_SpecimenSession[0][1]
         item_CustomData = database.execute(
-            f"SELECT * FROM CustomData WHERE CustomDataID = {item_id}"
+            f"SELECT * FROM CustomData WHERE FolderID = {folder_id}"
         ).fetchall()
         if item_CustomData == []:
             raise sqlite3.OperationalError
     except sqlite3.OperationalError:
-        try:
-            cur = database.execute(f"SELECT * FROM CustomData")
-            item_CustomData = list(map(lambda x: x[0], cur.description))
-            item_CustomData = [
-                dict(zip(item_CustomData, ("" for x in range(len(item_CustomData)))))
-            ]
-        except sqlite3.OperationalError:
-            item_CustomData = [{" ": " "}]
+        item_CustomData = [{" ": " "}]
 
     return render_template(
         "editor_view.html",

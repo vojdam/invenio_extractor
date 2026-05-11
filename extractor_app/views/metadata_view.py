@@ -91,8 +91,9 @@ def metadata_view_page(item_id: int):
     ).fetchall()
 
     try:
+        folder_id = item_SpecimenSession[0][1]
         item_CustomData = database.execute(
-            f"SELECT * FROM CustomData WHERE CustomDataID = {item_id}"
+            f"SELECT * FROM CustomData WHERE FolderID = {folder_id}"
         ).fetchall()
         if item_CustomData == []:
             raise sqlite3.OperationalError
