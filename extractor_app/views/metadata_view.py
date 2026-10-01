@@ -236,9 +236,15 @@ def metadata_view_page(item_id: int):
         abort(404)
 
     try:
+<<<<<<< HEAD
         folder_id = item_SpecimenSession[0]["FolderID"]
         item_CustomData = database.execute(
             "SELECT * FROM CustomData WHERE FolderID = ?", (folder_id,)
+=======
+        folder_id = item_SpecimenSession[0][1]
+        item_CustomData = database.execute(
+            f"SELECT * FROM CustomData WHERE FolderID = {folder_id}"
+>>>>>>> ca747b774273c1bcc618189e7b0cfb981f0777b8
         ).fetchall()
         if not item_CustomData:
             raise sqlite3.OperationalError
